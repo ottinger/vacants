@@ -14,10 +14,11 @@ import django
 django.setup()
 
 import okcvacants.models
-
+import vacants_project.tokens
 
 def get_geocode(address):
-    api_address = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + address + ".json?access_token=pk.eyJ1IjoibWF0dGZpY2tlIiwiYSI6ImNqNnM2YmFoNzAwcTMzM214NTB1NHdwbnoifQ.Or19S7KmYPHW8YjRz82v6g&autocomplete=false&types=address"
+    api_address = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + address + ".json?access_token=" + \
+                  vacants_project.tokens.MAPBOX_TOKEN + "&autocomplete=false&types=address"
     print(address)
     r = requests.get(api_address)
     request_json = json.loads(r.text)
@@ -26,4 +27,7 @@ def get_geocode(address):
 
 for o in okcvacants.models.Property.objects.all():
     geocode = get_geocode(o.address)
+    o.lat = geocode[1]
+    o.lon = geocode[0]
+    o.save()
     print(geocode)
