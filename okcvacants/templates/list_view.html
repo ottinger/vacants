@@ -1,0 +1,9 @@
+<ul>
+    {% for p in property_list %}
+        <li>
+            <b><a href="property/{{ p.id }}">{{ p.case_number }}</a></b>: {{ p.address }},
+            declared {{ p.declared_date }}
+        </li>
+    {% endfor %}
+</ul>
+

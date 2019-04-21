@@ -10,15 +10,11 @@ import io
 import re
 import datetime
 
-### test ###
 import os
-import vacants_project
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
 import django
-
 django.setup()
-### ###
 
 import okcvacants.models
 
@@ -34,8 +30,7 @@ case_number_regex = r'^C[0-9]{2}-[0-9]{5}$'
 date_regex = r'^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$'
 ward_number_regex = r'^[0-9]+$'  # support >1 digit for flexibility though there are 8 wards
 
-# for i in range(reader.getNumPages()):
-for i in [0]:
+for i in range(reader.getNumPages()):
     # Now do our magic!
     pageObj = reader.getPage(i)
     split_lines = str.splitlines(pageObj.extractText())
@@ -62,16 +57,26 @@ for i in [0]:
             case_number_found = True  # we're processing a record now
         # If we're here and haven't gotten the date yet, it's an address line.
         elif case_number_found and not date_found and not re.match(date_regex, l):
-            print("xx" + l)
             p.address += l + " "
         elif case_number_found and re.match(date_regex, l):
             date_found = True
             p.declared_date = datetime.datetime.strptime(l, "%m/%d/%Y").date()
             pass  # we need to process date
         elif case_number_found and not p.ward_number:
-            p.ward_number = int(l)
+            try:
+                p.ward_number = int(l)
+            except:
+                print("Exception on converting ward_number for case_number: " + p.case_number)
+                p.ward_number = -1
         elif case_number_found and not p.parcel_number:
-            p.parcel_number = int(l)
+            try:
+                p.parcel_number = int(l)
+            except:
+                # There is at least one parcel number that is in invalid format. It has pound/# signs
+                # in it so I am assuming it's a mistake. This can be changed later if it's not
+                print("Exception on converting parcel_number for case_number: " + p.case_number)
+                p.parcel_number = -1
+
             case_number_found = False  # done processing record
             date_found = False
             p.save()
