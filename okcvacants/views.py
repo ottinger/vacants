@@ -25,3 +25,10 @@ def individual_view(request, id):
         raise Http404("Could not find property")
     context = {'p': property}
     return render(request, 'individual_view.html', context)
+
+
+def map_view(request):
+    property_list = Property.objects.order_by('declared_date')
+    template = loader.get_template('map_view.html')
+    context = {'property_list': property_list}
+    return HttpResponse(template.render(context, request))
