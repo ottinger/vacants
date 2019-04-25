@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
 
 # Create your models here.
 class Property(models.Model):
@@ -13,3 +15,5 @@ class Property(models.Model):
     # lat/lon will be DecimalField for now. We may set up a proper GIS database later
     lat = models.DecimalField(max_digits=12, decimal_places=9, default=0)
     lon = models.DecimalField(max_digits=12, decimal_places=9, default=0)
+
+    latlon = models.PointField(default=Point(0, 0))

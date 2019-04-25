@@ -10,6 +10,7 @@ import json
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
 import django
+from django.contrib.gis.geos import Point
 
 django.setup()
 
@@ -29,5 +30,6 @@ for o in okcvacants.models.Property.objects.all():
     geocode = get_geocode(o.address)
     o.lat = geocode[1]
     o.lon = geocode[0]
+    o.latlon = Point(geocode[1], geocode[0])
     o.save()
     print(geocode)
