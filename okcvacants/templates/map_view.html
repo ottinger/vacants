@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,25 +15,42 @@
         #mapid {
             height: 800px;
         }
+
+        #mapp {
+            height: 800px;
+        }
     </style>
 </head>
 <body>
-<div id="mapid"></div>
+<h2>test</h2>
 
+<div id="curaddress"></div>
+<div id="mappy"></div>
+
+
+<script src="https://fb.me/react-15.0.1.js"></script>
+<script src="https://fb.me/react-dom-15.0.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 <script>
-    var mymap = L.map('mapid').setView([35.4676, -97.5164], 13);
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-        maxZoom: 18,
-    }).addTo(mymap);
+    function getMarkers(mymap) {
+        var markers_list = [];
+        propertyMarker = L.Marker.extend({
+                options: {
+                    address: "",
 
-    var markers_list = [];
-    {% for p in property_list %}
-        markers_list.push(L.marker([{{ p.lat }}, {{ p.lon }}]).addTo(mymap));
-    {% endfor %}
+                }
+            }
+        );
+        {% for p in property_list %}
+            var curMarker = new propertyMarker([{{ p.lat }}, {{ p.lon }}]).addTo(mymap);
+            curMarker.options.address = "{{ p.address }}";
+            markers_list.push(curMarker);
+        {% endfor %}
+        return markers_list;
+    }
 
 
-    var z = L.marker([39, -77]).addTo(mymap);
 </script>
+<script type="text/babel" src="{% static "/scripts/map.js" %}"></script>
 </body>
 </html>
