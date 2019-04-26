@@ -6,12 +6,9 @@ class Map extends React.Component {
             maxZoom: 18,
         }).addTo(mymapp);
 
-        var mapp_markers = getMarkers(mymapp);
-        for (var i = 0; i < mapp_markers.length; i++) {
-            mapp_markers[i].on("click", function () {
-                alert(this.options.address);
-            });
-        }
+        var mygeojson = getGeoJson();
+        console.log(mygeojson);
+        L.geoJSON(mygeojson).addTo(mymapp);
     }
 
     render() {

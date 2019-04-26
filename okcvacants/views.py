@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
 
+from django.core.serializers import serialize
+
 from .models import Property
 
 # Create your views here.
@@ -30,5 +32,20 @@ def individual_view(request, id):
 def map_view(request):
     property_list = Property.objects.order_by('declared_date')
     template = loader.get_template('map_view.html')
-    context = {'property_list': property_list}
+
+    property_geojson = serialize('geojson', Property.objects.all(),
+                                 geometry_field='latlon',
+                                 fields=('latlon', 'address'))
+    print(property_geojson)
+
+    context = {'property_list': property_list,
+               'geojson': property_geojson}
     return HttpResponse(template.render(context, request))
+
+
+def serialized(request):
+    x = serialize('geojson', Property.objects.all(),
+                  geometry_field='latlon',
+                  fields=('latlon', 'address'))
+    print(x)
+    return HttpResponse(x, content_type='application/json')

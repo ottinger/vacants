@@ -30,6 +30,6 @@ for o in okcvacants.models.Property.objects.all():
     geocode = get_geocode(o.address)
     o.lat = geocode[1]
     o.lon = geocode[0]
-    o.latlon = Point(geocode[1], geocode[0])
+    o.latlon = Point(geocode[0], geocode[1])
     o.save()
     print(geocode)
