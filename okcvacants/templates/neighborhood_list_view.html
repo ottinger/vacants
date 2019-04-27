@@ -1,0 +1,7 @@
+<ul>
+    {% for n in neighborhood_list %}
+        <li>
+            <a href="../neighborhood/{{ n.id }}"><b>{{ n.name }}</b></a> ({{ n.type }})
+        </li>
+    {% endfor %}
+</ul>

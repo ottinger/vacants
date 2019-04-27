@@ -49,6 +49,34 @@ def map_view(request):
     return HttpResponse(template.render(context, request))
 
 
+# neighborhood_list_view()
+#
+# Show list of neighborhoods (no map)
+def neighborhood_list_view(request):
+    neighborhood_list = Neighborhood.objects.order_by('name')
+    template = loader.get_template('neighborhood_list_view.html')
+    return HttpResponse(template.render({'neighborhood_list': neighborhood_list}, request))
+
+
+def neighborhood_view(request, id):
+    try:
+        neighborhood = Neighborhood.objects.get(pk=id)
+    except Neighborhood.DoesNotExist:
+        raise Http404("Could not find neighborhood")
+
+    properties_geojson = serialize('geojson',
+                                   [x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)],
+                                   geometry_field='latlon',
+                                   fields=('latlon', 'address'))
+
+    n_geojson = serialize('geojson', [neighborhood],
+                          geometry_field='boundary',
+                          fields={'boundary', 'name', 'type'})
+    context = {'neighborhoods_geojson': n_geojson,
+               'properties_geojson': properties_geojson}
+    return render(request, 'map_view.html', context)
+
+
 def serialized(request):
     x = serialize('geojson', Property.objects.all(),
                   geometry_field='latlon',
