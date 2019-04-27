@@ -12,11 +12,7 @@
             integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
             crossorigin=""></script>
     <style>
-        #mapid {
-            height: 800px;
-        }
-
-        #mapp {
+        #mappy {
             height: 800px;
         }
     </style>
@@ -24,10 +20,6 @@
 <body>
 <div id="curaddress"></div>
 <div id="mappy"></div>
-
-<script src="https://fb.me/react-15.0.1.js"></script>
-<script src="https://fb.me/react-dom-15.0.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 <script>
     function getMarkers(mymap) {
         var markers_list = [];
@@ -55,6 +47,6 @@
     }
 
 </script>
-<script type="text/babel" src="{% static "/scripts/map.js" %}"></script>
+<script src="{% static "/scripts/map.js" %}"></script>
 </body>
 </html>
