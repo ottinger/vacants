@@ -5,6 +5,7 @@ from django.template import loader
 from django.core.serializers import serialize
 
 from .models import Property
+from .models import Neighborhood
 
 # Create your views here.
 def index(request):
@@ -33,13 +34,18 @@ def map_view(request):
     property_list = Property.objects.order_by('declared_date')
     template = loader.get_template('map_view.html')
 
-    property_geojson = serialize('geojson', Property.objects.all(),
-                                 geometry_field='latlon',
-                                 fields=('latlon', 'address'))
-    print(property_geojson)
+    properties_geojson = serialize('geojson', Property.objects.all(),
+                                   geometry_field='latlon',
+                                   fields=('latlon', 'address'))
+    print(properties_geojson)
+
+    neighborhoods_geojson = serialize('geojson', Neighborhood.objects.all(),
+                                      geometry_field='boundary',
+                                      fields=('boundary', 'name', 'type'))
 
     context = {'property_list': property_list,
-               'geojson': property_geojson}
+               'properties_geojson': properties_geojson,
+               'neighborhoods_geojson': neighborhoods_geojson}
     return HttpResponse(template.render(context, request))
 
 

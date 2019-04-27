@@ -17,3 +17,9 @@ class Property(models.Model):
     lon = models.DecimalField(max_digits=12, decimal_places=9, default=0)
 
     latlon = models.PointField(default=Point(0, 0))
+
+
+class Neighborhood(models.Model):
+    name = models.CharField(max_length=150)
+    type = models.CharField(max_length=150)
+    boundary = models.GeometryField()

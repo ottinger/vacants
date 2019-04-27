@@ -49,7 +49,11 @@
     }
 
     function getGeoJson() {
-        return {{ geojson|safe }};
+        return {{ properties_geojson|safe }};
+    }
+
+    function getNeighborhoodsGeoJson() {
+        return {{ neighborhoods_geojson|safe }};
     }
 
 </script>

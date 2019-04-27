@@ -9,6 +9,9 @@ class Map extends React.Component {
         var mygeojson = getGeoJson();
         console.log(mygeojson);
         L.geoJSON(mygeojson).addTo(mymapp);
+
+        var neighborhoodsGeoJson = getNeighborhoodsGeoJson();
+        L.geoJSON(neighborhoodsGeoJson).addTo(mymapp);
     }
 
     render() {
