@@ -25,5 +25,3 @@ for o in okcvacants.models.Neighborhood.objects.all():
     o.boundary.transform(32124)  # TODO: check if transform is saved?
     o.boundary_area = (o.boundary.area / 2589988.11) * 640  # Acres
     o.save()
-
-    pass
