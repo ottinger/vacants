@@ -23,3 +23,4 @@ class Neighborhood(models.Model):
     name = models.CharField(max_length=150)
     type = models.CharField(max_length=150)
     boundary = models.GeometryField(srid=4269)
+    boundary_area = models.FloatField(null=True)  # value is in acres
