@@ -90,3 +90,35 @@ def serialized(request):
                   fields=('latlon', 'address'))
     print(x)
     return HttpResponse(x, content_type='application/json')
+
+
+# search_page()
+#
+# Renders a search page with the list of neighborhood names.
+def neighborhood_search_page(request):
+    neighborhood_list = Neighborhood.objects.order_by('name')
+
+    template = loader.get_template('search.html')
+    return HttpResponse(template.render({'neighborhood_list': neighborhood_list}), request)
+
+
+def do_neighborhood_search(request):
+    neighborhood_list = Neighborhood.objects.order_by('name')
+    neighborhood_name = request.GET.get("neighborhood_name")
+
+    try:
+        neighborhood = Neighborhood.objects.get(name=neighborhood_name)
+    except Neighborhood.DoesNotExist:
+        raise Http404("Could not find neighborhood")
+
+    # this code is duplicated from neighborhood_view()! Unduplicate me!
+    properties_geojson = serialize('geojson',
+                                   [x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)],
+                                   geometry_field='latlon',
+                                   fields=('latlon', 'address'))
+    n_geojson = serialize('geojson', [neighborhood],
+                          geometry_field='boundary',
+                          fields={'boundary', 'name', 'type'})
+    context = {'neighborhoods_geojson': n_geojson,
+               'properties_geojson': properties_geojson}
+    return render(request, 'map_view.html', context)
