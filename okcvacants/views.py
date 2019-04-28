@@ -54,6 +54,20 @@ def map_view(request):
 # Show list of neighborhoods (no map)
 def neighborhood_list_view(request):
     neighborhood_list = Neighborhood.objects.order_by('name')
+    all_properties = Property.objects.all()
+
+    for x in all_properties:
+        x.latlon.transform(32124)
+    for n in neighborhood_list:
+        # note that EPSG 32124 apparently ends in northern Norman. if we go further south, this may be an issue
+        n.boundary.transform(32124)
+        n.acres = (n.boundary.area / 2589988.11) * 640
+
+        properties = [x for x in all_properties if n.boundary.contains(x.latlon)]
+        n.properties_count = len(properties)
+
+        n.properties_per_acre = n.properties_count / n.acres
+
     template = loader.get_template('neighborhood_list_view.html')
     return HttpResponse(template.render({'neighborhood_list': neighborhood_list}, request))
 
