@@ -8,19 +8,21 @@ from .models import Property
 from .models import Neighborhood
 
 # Create your views here.
+
+# index()
+#
+# Displays a list of properties.
 def index(request):
     property_list = Property.objects.order_by('declared_date')
-    '''
-    response = ""
-    for p in property_list:
-        response += p.case_number + ": " + p.address + ", declared " + str(p.declared_date) + "<br>"
-    return HttpResponse(response)
-        '''
+
     template = loader.get_template('list_view.html')
     context = {'property_list': property_list}
     return HttpResponse(template.render(context, request))
 
 
+# individual_view()
+#
+# Displays details for an individual property (presently no map)
 def individual_view(request, id):
     try:
         property = Property.objects.get(pk=id)
@@ -30,6 +32,9 @@ def individual_view(request, id):
     return render(request, 'individual_view.html', context)
 
 
+# map_view()
+#
+# Displays a map of all neighborhoods and properties.
 def map_view(request):
     property_list = Property.objects.order_by('declared_date')
     template = loader.get_template('map_view.html')
@@ -65,6 +70,9 @@ def neighborhood_list_view(request):
     return HttpResponse(template.render({'neighborhood_list': neighborhood_list}, request))
 
 
+# neighborhood_view()
+#
+# Given the neighborhood id, displays a map of the neighborhood along with properties in it.
 def neighborhood_view(request, id):
     try:
         neighborhood = Neighborhood.objects.get(pk=id)
@@ -83,15 +91,6 @@ def neighborhood_view(request, id):
                'properties_geojson': properties_geojson}
     return render(request, 'map_view.html', context)
 
-
-def serialized(request):
-    x = serialize('geojson', Property.objects.all(),
-                  geometry_field='latlon',
-                  fields=('latlon', 'address'))
-    print(x)
-    return HttpResponse(x, content_type='application/json')
-
-
 # search_page()
 #
 # Renders a search page with the list of neighborhood names.
@@ -102,23 +101,17 @@ def neighborhood_search_page(request):
     return HttpResponse(template.render({'neighborhood_list': neighborhood_list}), request)
 
 
+# do_neighborhood_search()
+#
+# Takes the name of a neighborhood, and returns a view from neighborhood_view(). Neighborhood name
+# must be exact (autocomplete is provided in the search template).
 def do_neighborhood_search(request):
-    neighborhood_list = Neighborhood.objects.order_by('name')
+    # Find the neighborhood id
     neighborhood_name = request.GET.get("neighborhood_name")
-
     try:
         neighborhood = Neighborhood.objects.get(name=neighborhood_name)
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find neighborhood")
 
-    # this code is duplicated from neighborhood_view()! Unduplicate me!
-    properties_geojson = serialize('geojson',
-                                   [x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)],
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address'))
-    n_geojson = serialize('geojson', [neighborhood],
-                          geometry_field='boundary',
-                          fields={'boundary', 'name', 'type'})
-    context = {'neighborhoods_geojson': n_geojson,
-               'properties_geojson': properties_geojson}
-    return render(request, 'map_view.html', context)
+    # Return result from neighborhood_view()
+    return neighborhood_view(request, neighborhood.id)
