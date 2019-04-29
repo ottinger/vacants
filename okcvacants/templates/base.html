@@ -20,7 +20,27 @@
 <body>
 {% block navbar %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">OKC Vacants</a>
+        <a class="navbar-brand" href="{% url "root" %}">OKC Vacants</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "map" %}">Citywide Map</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown toggle" href="#" id="neighborhoods-dropdown" role="button"
+                   data-toggle="dropdown">Neighborhoods</a>
+                <div class="dropdown-menu" aria-labbeledby="neighborhoods-dropdown">
+                    <a class="dropdown-item" href="{% url "neighborhoods" %}">List all...</a>
+                    <a class="dropdown-item" href="{% url "neighborhoodsearch" %}">Search</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown toggle" href="#" id="properties-dropdown" role="button"
+                   data-toggle="dropdown">Properties</a>
+                <div class="dropdown-menu" aria-labelledby="properties-dropdown">
+                    <a class="dropdown-item" href="{% url "properties" %}">List all...</a>
+                </div>
+            </li>
+        </ul>
     </nav>
 {% endblock %}
 
