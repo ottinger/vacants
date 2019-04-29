@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Property View: {{ p.address }}{% endblock %}
+{% block body %}
 <ul>
     <li><b>Case Number: </b>{{ p.case_number }}</li>
     <li><b>Address: </b>{{ p.address }}</li>
@@ -6,3 +9,4 @@
     <li><b>Parcel Number: </b>{{ p.parcel_number }}</li>
     <li><b>Coordinates: </b>({{ p.lat }}, {{ p.lon }})</li>
 </ul>
+{% endblock %}
