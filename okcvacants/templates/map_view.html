@@ -7,23 +7,6 @@
 <div id="mappy"></div>
 
     <script>
-    function getMarkers(mymap) {
-        var markers_list = [];
-        propertyMarker = L.Marker.extend({
-                options: {
-                    address: "",
-
-                }
-            }
-        );
-        {% for p in property_list %}
-            var curMarker = new propertyMarker([{{ p.lat }}, {{ p.lon }}]).addTo(mymap);
-            curMarker.options.address = "{{ p.address }}";
-            markers_list.push(curMarker);
-        {% endfor %}
-        return markers_list;
-    }
-
     function getGeoJson() {
         return {{ properties_geojson|safe }};
     }
