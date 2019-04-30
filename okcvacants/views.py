@@ -23,7 +23,7 @@ def index(request):
 # individual_view()
 #
 # Displays details for an individual property (presently no map)
-def individual_view(request, id):
+def individual_view(request, id=None):
     try:
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
@@ -41,12 +41,10 @@ def map_view(request):
 
     properties_geojson = serialize('geojson', Property.objects.all(),
                                    geometry_field='latlon',
-                                   fields=('latlon', 'address'))
-    print(properties_geojson)
-
+                                   fields=('latlon', 'address', 'pk'))
     neighborhoods_geojson = serialize('geojson', Neighborhood.objects.all(),
                                       geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type'))
+                                      fields=('boundary', 'name', 'type', 'pk'))
 
     context = {'property_list': property_list,
                'properties_geojson': properties_geojson,
@@ -73,7 +71,7 @@ def neighborhood_list_view(request):
 # neighborhood_view()
 #
 # Given the neighborhood id, displays a map of the neighborhood along with properties in it.
-def neighborhood_view(request, id):
+def neighborhood_view(request, id=None):
     try:
         neighborhood = Neighborhood.objects.get(pk=id)
     except Neighborhood.DoesNotExist:
