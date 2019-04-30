@@ -7,8 +7,6 @@ from django.core.serializers import serialize
 from .models import Property
 from .models import Neighborhood
 
-# Create your views here.
-
 # index()
 #
 # Displays a list of properties.
@@ -35,21 +33,21 @@ def individual_view(request, id=None):
 # map_view()
 #
 # Displays a map of all neighborhoods and properties.
-def map_view(request):
-    property_list = Property.objects.order_by('declared_date')
-    template = loader.get_template('map_view.html')
+def map_view(request, neighborhood=None, properties=None):
+    if not neighborhood:
+        neighborhood = Neighborhood.objects.all()
+        properties = Property.objects.all()
 
-    properties_geojson = serialize('geojson', Property.objects.all(),
+    properties_geojson = serialize('geojson', properties,
                                    geometry_field='latlon',
                                    fields=('latlon', 'address', 'pk'))
-    neighborhoods_geojson = serialize('geojson', Neighborhood.objects.all(),
+    neighborhoods_geojson = serialize('geojson', neighborhood,
                                       geometry_field='boundary',
                                       fields=('boundary', 'name', 'type', 'pk'))
 
-    context = {'property_list': property_list,
-               'properties_geojson': properties_geojson,
+    context = {'properties_geojson': properties_geojson,
                'neighborhoods_geojson': neighborhoods_geojson}
-    return HttpResponse(template.render(context, request))
+    return render(request, "map_view.html", context)
 
 
 # neighborhood_list_view()
@@ -77,27 +75,18 @@ def neighborhood_view(request, id=None):
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find neighborhood")
 
-    properties_geojson = serialize('geojson',
-                                   [x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)],
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address'))
-
-    n_geojson = serialize('geojson', [neighborhood],
-                          geometry_field='boundary',
-                          fields={'boundary', 'name', 'type'})
-    context = {'neighborhoods_geojson': n_geojson,
-               'properties_geojson': properties_geojson}
-    return render(request, 'map_view.html', context)
+    return map_view(
+        request,
+        neighborhood=[neighborhood],
+        properties=[x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)]
+    )
 
 # search_page()
 #
 # Renders a search page with the list of neighborhood names.
 def neighborhood_search_page(request):
     neighborhood_list = Neighborhood.objects.order_by('name')
-
-    template = loader.get_template('search.html')
-    return HttpResponse(template.render({'neighborhood_list': neighborhood_list}), request)
-
+    return render(request, "search.html", {'neighborhood_list': neighborhood_list})
 
 # do_neighborhood_search()
 #
