@@ -142,6 +142,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # serializers
 SERIALIZATION_MODULES = {
     "geojson": "django.contrib.gis.serializers.geojson"
