@@ -23,9 +23,9 @@ import vacants_project.tokens
 # get_geocode()
 #
 # Calls the Mapbox API and returns the lat/lon for a single address.
-def get_geocode(address):
+def get_geocode(address, api_key):
     api_address = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + address + ".json?access_token=" + \
-                  vacants_project.tokens.MAPBOX_TOKEN + "&autocomplete=false&types=address"
+                  api_key + "&autocomplete=false&types=address"
     print(address)
     r = requests.get(api_address)
     request_json = json.loads(r.text)
@@ -35,9 +35,21 @@ def get_geocode(address):
 class Command(BaseCommand):
     help = "Calls Mapbox geocoding API to get the latitude/longitude for all addresses in Property table."
 
+    def add_arguments(self, parser):
+        parser.add_argument('-k', '--api_key', type=str, help='Mapbox API key (if not defined in settings)')
+
     def handle(self, *args, **options):
+        if options['api_key']:
+            api_key = options['api_key']
+        elif vacants_project.tokens.MAPBOX_TOKEN:
+            api_key = vacants_project.tokens.MAPBOX_TOKEN
+        else:
+            raise Exception("Mapbox API key not specified")
+
+
+
         for o in okcvacants.models.Property.objects.all():
-            geocode = get_geocode(o.address)
+            geocode = get_geocode(o.address, api_key)
             o.lat = geocode[1]
             o.lon = geocode[0]
             o.latlon = Point(geocode[0], geocode[1])
