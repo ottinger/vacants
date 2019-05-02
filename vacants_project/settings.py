@@ -151,7 +151,7 @@ GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 
 # NOTE: Comment out the line below unless used on Heroku (otherwise we get 500 error)
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
 
 if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
