@@ -17,8 +17,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
 django.setup()
 
 import okcvacants.models
-import vacants_project.tokens
-
 
 # get_geocode()
 #
@@ -41,8 +39,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['api_key']:
             api_key = options['api_key']
-        elif vacants_project.tokens.MAPBOX_TOKEN:
-            api_key = vacants_project.tokens.MAPBOX_TOKEN
         else:
             raise Exception("Mapbox API key not specified")
 
