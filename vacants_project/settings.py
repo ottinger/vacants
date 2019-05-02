@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
+
+# Django doesn't serve static files on its own when DEBUG is set to False; that's what
+# whitenoise does. (Otherwise we get 500 errors)
+import whitenoise
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,12 +24,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$og4zlo(b'
+SECRET_KEY = os.getenv('SECRET_KEY', 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$og4zlo(b')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Verbose logging - used to investigate 500 errors that creep up after we set DEBUG to False
+# Example: "Missing staticfiles manifest entry for '/css/style.css'"
+import logging
+
+LOGGING = logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+)
+
+ALLOWED_HOSTS = ['vacants.herokuapp.com',
+                 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -36,11 +51,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'okcvacants.apps.OkcvacantsConfig',
-    #    'okcvacants.management.import_pdf'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,6 +135,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
@@ -128,3 +146,14 @@ STATICFILES_DIRS = (
 SERIALIZATION_MODULES = {
     "geojson": "django.contrib.gis.serializers.geojson"
 }
+
+GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
+
+# NOTE: Comment out the line below unless used on Heroku (otherwise we get 500 error)
+django_heroku.settings(locals())
+
+if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
+    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+elif DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'
