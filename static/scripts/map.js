@@ -6,7 +6,6 @@ L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voya
 
 // Get geojson for properties
 var mygeojson = getGeoJson();
-console.log(mygeojson);
 L.geoJSON(mygeojson, {
     onEachFeature: function (feature, layer) {
         if (feature.properties && feature.properties.address) {

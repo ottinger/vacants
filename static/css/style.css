@@ -1,13 +1,13 @@
 #mappy {
     height: calc(100% - 3.5rem);
-}
-
-#app {
     padding: 0px;
 }
 
-html, body {
-    height: 100%;
+.searchbox {
+    padding: 10px;
 }
 
 /* necessary for leaflet % sizing to work right! */
+html, body {
+    height: 100%;
+}

@@ -5,7 +5,7 @@
     {% for p in property_list %}
         <li>
             <b><a href="{% url "property" p.id %}">{{ p.case_number }}</a></b>: {{ p.address }},
-            declared {{ p.declared_date }}
+            declared {{ p.declared_date|date:"m/d/Y" }}
         </li>
     {% endfor %}
 </ul>

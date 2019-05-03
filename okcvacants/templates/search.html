@@ -8,12 +8,15 @@
 {% endblock %}
 
 {% block body %}
-<form action="../doneighborhoodsearch/" method="GET">
-    <div class="ui-widget">
-        <label for="tags">Tags: </label>
-        <input id="tags" name="neighborhood_name">
+    <div class="searchbox">
+        <form action="../doneighborhoodsearch/" method="GET">
+            <div class="ui-widget">
+                <label for="tags">Search for neighborhoods: </label>
+                <input id="tags" name="neighborhood_name">
+            </div>
+        </form>
     </div>
-</form>
+
 {% endblock %}
 
 {% block bottom_scripts %}
