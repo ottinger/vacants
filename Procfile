@@ -1,0 +1,1 @@
+web: gunicorn vacants_project.wsgi --log-file -

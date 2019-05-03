@@ -18,7 +18,7 @@ class Command(BaseCommand):
     help = "Parses neighborhood boundaries from SHP/DBF format files, and creates Neighborhood objects."
 
     def handle(self, *args, **options):
-        ds = DataSource(PROJECT_ROOT + "/okc_neighborhoods.dbf")
+        ds = DataSource(PROJECT_ROOT + "/neighborhoods_shapefiles/okc_neighborhoods.dbf")
 
         mapping = {'name': 'Associatio',
                    'type': 'Type',

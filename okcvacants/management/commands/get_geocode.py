@@ -39,6 +39,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['api_key']:
             api_key = options['api_key']
+        elif os.getenv('MAPBOX_KEY'):
+            api_key = os.getenv('MAPBOX_KEY')
         else:
             raise Exception("Mapbox API key not specified")
 
