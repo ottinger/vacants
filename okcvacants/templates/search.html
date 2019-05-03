@@ -9,7 +9,7 @@
 
 {% block body %}
     <div class="searchbox">
-        <form action="../doneighborhoodsearch/" method="GET">
+        <form id="neighborhood-search-form" action="{% url "doneighborhoodsearch" %}" method="GET">
             <div class="ui-widget">
                 <label for="tags">Search for neighborhoods: </label>
                 <input id="tags" name="neighborhood_name">
@@ -29,7 +29,11 @@
                 {% endfor %}
             ];
             $("#tags").autocomplete({
-                source: availableTags
+                source: availableTags,
+                select: function (event, ui) {
+                    $("#tags").val(ui.item.label);
+                    $("#neighborhood-search-form").submit()
+                }
             });
         });
     </script>
