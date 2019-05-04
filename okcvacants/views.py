@@ -58,8 +58,9 @@ def neighborhood_list_view(request):
     all_properties = Property.objects.all()
 
     for n in neighborhood_list:
-        properties = [x for x in all_properties if n.boundary.contains(x.latlon)]
-        n.properties_count = len(properties)
+        n.all_properties = n.properties.all()
+        n.properties_count = len(n.all_properties)
+        # calculate properties per acre
         n.properties_per_acre = n.properties_count / n.boundary_area
 
     template = loader.get_template('neighborhood_list_view.html')
