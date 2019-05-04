@@ -61,7 +61,7 @@ def neighborhood_list_view(request):
         n.all_properties = n.properties.all()
         n.properties_count = len(n.all_properties)
         # calculate properties per acre
-        n.properties_per_acre = n.properties_count / n.boundary_area
+        n.properties_per_sq_mi = n.properties_count / (n.boundary_area / 640)
 
     template = loader.get_template('neighborhood_list_view.html')
     return HttpResponse(template.render({'neighborhood_list': neighborhood_list}, request))

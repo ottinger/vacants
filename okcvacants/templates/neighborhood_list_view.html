@@ -9,16 +9,20 @@
         <li>
             <a href="{% url "neighborhood" n.id %}"><b>{{ n.name }}</b></a> ({{ n.type }})
             <ul>
-                <li>{{ n.boundary_area }} acres</li>
-                <li>{{ n.properties_count }} abandoned properties</li>
-                <li>{{ n.properties_per_acre }} per acre</li>
-                <li>Properties:
-                    <ul>
-                        {% for p in n.all_properties %}
-                            <li><a href="{% url "property" p.id %}">{{ p.address }}</a></li>
-                        {% endfor %}
-                    </ul>
+                <li>{{ n.boundary_area|floatformat:2 }} acres</li>
+                <li>{{ n.properties_count }} abandoned properties ({{ n.properties_per_sq_mi|floatformat:2 }} per square
+                    mile)
                 </li>
+                {% if n.all_properties %}
+                    <li>
+                        Properties:
+                        <ul>
+                            {% for p in n.all_properties %}
+                                <li><a href="{% url "property" p.id %}">{{ p.address }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
         </li>
     {% endfor %}
