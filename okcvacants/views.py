@@ -41,7 +41,7 @@ def map_view(request, neighborhood=None, properties=None):
     properties_geojson = serialize('geojson', properties,
                                    geometry_field='latlon',
                                    fields=('latlon', 'address', 'pk'))
-    neighborhoods_geojson = serialize('geojson', neighborhood,
+    neighborhoods_geojson = serialize('neighborhood_geojson', neighborhood,
                                       geometry_field='boundary',
                                       fields=('boundary', 'name', 'type', 'pk'))
 

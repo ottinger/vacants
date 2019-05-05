@@ -17,6 +17,12 @@ L.geoJSON(neighborhoodsGeoJson, {
             layer.bindPopup(popStr);
 
         }
+    },
+    style: function (feature) {
+        return {
+            fillColor: "#00F",
+            fillOpacity: (feature.properties.property_density / 100) // look at a different method of calculating?
+        }
     }
 }).addTo(mymapp);
 
@@ -35,8 +41,10 @@ L.geoJSON(mygeojson, {
     },
     pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
-            radius: 10,
-            color: "#F00"
+            radius: 6,
+            color: "#FF0000",
+            opacity: 1,
+            fillOpacity: 0.3
         })
     }
 }).addTo(mymapp);

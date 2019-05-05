@@ -12,12 +12,12 @@ class Property(models.Model):
     ward_number = models.IntegerField()
     parcel_number = models.IntegerField()  # This is OKC's parcel number, not to be confused with County Assessor's!
 
-    latlon = models.PointField(default=Point(0, 0), srid=4269)
+    latlon = models.PointField(default=Point(0, 0))
 
 class Neighborhood(models.Model):
     name = models.CharField(max_length=150)
     type = models.CharField(max_length=150)
-    boundary = models.GeometryField(srid=4269)
+    boundary = models.GeometryField()
     boundary_area = models.FloatField(null=True)  # value is in acres
 
     # There can be multiple Neighborhoods for each Property, and (of course) multiple Properties

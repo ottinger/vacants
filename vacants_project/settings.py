@@ -144,7 +144,8 @@ STATICFILES_DIRS = (
 
 # serializers
 SERIALIZATION_MODULES = {
-    "geojson": "django.contrib.gis.serializers.geojson"
+    "geojson": "django.contrib.gis.serializers.geojson",
+    "neighborhood_geojson": "okcvacants.neighborhood_geojson_serializer"
 }
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
