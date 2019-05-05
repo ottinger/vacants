@@ -1,7 +1,7 @@
 var mymapp = L.map('mappy').setView([35.4676, -97.5164], 13);
 L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-    maxZoom: 18,
+    maxZoom: 20,
 }).addTo(mymapp);
 
 // Get geojson for neighborhoods
@@ -28,7 +28,19 @@ L.geoJSON(neighborhoodsGeoJson, {
 
 // Get geojson for properties
 var mygeojson = getGeoJson();
-L.geoJSON(mygeojson, {
+
+propertyRadius = 6;
+
+function propertiesStyle() {
+    return {
+        radius: propertyRadius,
+        color: "#FF0000",
+        opacity: 1,
+        fillOpacity: 0.3
+    };
+}
+
+var properties_layer = L.geoJSON(mygeojson, {
     onEachFeature: function (feature, layer) {
         if (feature.properties && feature.properties.address) {
             var popStr = "";
@@ -40,11 +52,40 @@ L.geoJSON(mygeojson, {
         }
     },
     pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {
-            radius: 6,
-            color: "#FF0000",
-            opacity: 1,
-            fillOpacity: 0.3
-        })
+        var theMarker = L.circleMarker(latlng, propertiesStyle());
+
+        return theMarker;
     }
 }).addTo(mymapp);
+
+mymapp.on('zoom', function (e) {
+    var cz = mymapp.getZoom();
+    switch (true) {
+        case (cz < 10):
+            propertyRadius = 2;
+            break;
+        case (cz < 13):
+            propertyRadius = 3;
+            break;
+        case (cz < 14):
+            propertyRadius = 6;
+            break;
+        case (cz < 15):
+            propertyRadius = 8;
+            break;
+        case (cz < 16):
+            propertyRadius = 10;
+            break;
+        case (cz < 17):
+            propertyRadius = 14;
+            break;
+        case (cz < 18):
+            propertyRadius = 18;
+            break;
+        case (cz >= 18):
+            propertyRadius = 24;
+            break;
+    }
+    console.log("level: " + cz + "\nradius: " + propertyRadius);
+    properties_layer.setStyle(propertiesStyle());
+});
