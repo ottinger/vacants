@@ -4,26 +4,26 @@
 {% block title %}Neighborhood List{% endblock %}
 
 {% block body %}
-<ul>
+    <ul class="list-group neighborhood-list">
     {% for n in neighborhood_list %}
-        <li>
-            <a href="{% url "neighborhood" n.id %}"><b>{{ n.name }}</b></a> ({{ n.type }})
-            <ul>
-                <li>{{ n.boundary_area|floatformat:2 }} acres</li>
-                <li>{{ n.properties_count }} abandoned properties ({{ n.properties_per_sq_mi|floatformat:2 }} per square
-                    mile)
-                </li>
+        <li class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse-details-{{ n.id }}">
+            {% if n.all_properties %}
+                <span class="badge badge-primary badge-pill float-right property-count-pill">{{ n.properties_count }}</span>
+            {% endif %}
+            <h5><a href="{% url "neighborhood" n.id %}">{{ n.name }}</a></h5>
+            <small>({{ n.type }})</small>
+            <div id="collapse-details-{{ n.id }}" class="collapse neighborhood-list-details">
+                <p>{{ n.boundary_area|floatformat:2 }} acres; {{ n.properties_count }} abandoned properties
+                    {% if n.all_properties %}({{ n.properties_per_sq_mi|floatformat:2 }} per square
+                        mile){% endif %}</p>
                 {% if n.all_properties %}
-                    <li>
-                        Properties:
-                        <ul>
-                            {% for p in n.all_properties %}
-                                <li><a href="{% url "property" p.id %}">{{ p.address }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
+                    <ul class="list-group">
+                        {% for p in n.all_properties %}
+                            <li class="list-group-item"><a href="{% url "property" p.id %}">{{ p.address }}</a></li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-            </ul>
+            </div>
         </li>
     {% endfor %}
 </ul>

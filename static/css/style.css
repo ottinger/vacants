@@ -4,10 +4,28 @@
 }
 
 .searchbox {
-    padding: 10px;
+    margin: 15px;
 }
+
 
 /* necessary for leaflet % sizing to work right! */
 html, body {
     height: 100%;
+}
+
+/* neighborhood list */
+.neighborhood-list {
+    margin: 15px;
+}
+
+.neighborhood-list-details {
+    margin-top: 10px;
+}
+
+.list-group {
+    display: inline-block;
+}
+
+.property-count-pill {
+    background-color: red;
 }
