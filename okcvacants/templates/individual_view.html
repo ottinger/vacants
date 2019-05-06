@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ p.address }}{% endblock %}
 {% block body %}
-<ul>
-    <li><b>Case Number: </b>{{ p.case_number }}</li>
-    <li><b>Address: </b>{{ p.address }}</li>
-    <li><b>Declared Date: </b>{{ p.declared_date|date:"m/d/Y" }}</li>
-    <li><b>Ward: </b>{{ p.ward_number }}</li>
-    <li><b>Parcel Number: </b>{{ p.parcel_number }}</li>
-    <li><b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})</li>
-</ul>
+    <div class="property-details-container">
+        <h2>{{ p.address }}</h2>
+        <p>
+            <b>Case Number: </b>{{ p.case_number }}<br>
+            <b>Address: </b>{{ p.address }}<br>
+            <b>Declared Date: </b>{{ p.declared_date|date:"m/d/Y" }}<br>
+            <b>Ward: </b>{{ p.ward_number }}<br>
+            <b>Parcel Number: </b>{{ p.parcel_number }}<br>
+            <b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})
+        </p>
+    </div>
 {% endblock %}

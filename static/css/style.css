@@ -29,3 +29,8 @@ html, body {
 .property-count-pill {
     background-color: red;
 }
+
+/* property details */
+.property-details-container {
+    margin: 15px;
+}

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Property List{% endblock %}
 {% block body %}
-<ul>
+    <ul class="list-group neighborhood-list">
     {% for p in property_list %}
-        <li>
-            <b><a href="{% url "property" p.id %}">{{ p.case_number }}</a></b>: {{ p.address }},
-            declared {{ p.declared_date|date:"m/d/Y" }}
+        <li class="list-group-item list-group-item-action">
+            <b><a href="{% url "property" p.id %}">{{ p.case_number }}</a></b>: {{ p.address }}<br>
+            <small>Declared {{ p.declared_date|date:"m/d/Y" }}</small>
         </li>
     {% endfor %}
 </ul>
