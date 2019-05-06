@@ -1,4 +1,4 @@
-var mymapp = L.map('mappy').setView([35.4676, -97.5164], 13);
+var mymapp = L.map('mappy');
 L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
     maxZoom: 20,
@@ -6,7 +6,7 @@ L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voya
 
 // Get geojson for neighborhoods
 var neighborhoodsGeoJson = getNeighborhoodsGeoJson();
-L.geoJSON(neighborhoodsGeoJson, {
+var neighborhoods_layer = L.geoJSON(neighborhoodsGeoJson, {
     onEachFeature: function (feature, layer) {
         if (feature.properties && feature.properties.name) {
             var popStr = "";
@@ -57,6 +57,8 @@ var properties_layer = L.geoJSON(mygeojson, {
         return theMarker;
     }
 }).addTo(mymapp);
+
+mymapp.fitBounds(neighborhoods_layer.getBounds());
 
 mymapp.on('zoom', function (e) {
     var cz = mymapp.getZoom();
