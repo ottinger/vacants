@@ -14,6 +14,10 @@ class Property(models.Model):
 
     latlon = models.PointField(default=Point(0, 0))
 
+    # If the address is incorrectly formatted or the geocoder chokes on it, we'll manually set it here (while
+    # keeping the original). For example, the geocoder thinks one of the addresses is near Kansas City.
+    corrected_address = models.CharField(max_length=150, null=True)
+
 class Neighborhood(models.Model):
     name = models.CharField(max_length=150)
     type = models.CharField(max_length=150)

@@ -8,7 +8,6 @@ import os
 import requests
 import json
 
-
 import django
 from django.core.management.base import BaseCommand
 from django.contrib.gis.geos import Point
@@ -44,10 +43,11 @@ class Command(BaseCommand):
         else:
             raise Exception("Mapbox API key not specified")
 
-
-
         for o in okcvacants.models.Property.objects.all():
-            geocode = get_geocode(o.address, api_key)
+            if (o.corrected_address):
+                geocode = get_geocode(o.corrected_address, api_key)
+            else:
+                geocode = get_geocode(o.address, api_key)
             o.lat = geocode[1]
             o.lon = geocode[0]
             o.latlon = Point(geocode[0], geocode[1])
