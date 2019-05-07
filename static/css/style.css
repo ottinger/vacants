@@ -8,6 +8,12 @@
     max-width: 800px;
 }
 
+.individual-neighborhood-map {
+    height: 24rem;
+    max-width: 800px;
+    margin-top: 15px;
+}
+
 .searchbox {
     margin: 15px;
 }
@@ -37,5 +43,10 @@ html, body {
 
 /* property details */
 .property-details-container {
+    margin: 15px;
+}
+
+/* neighborhood details */
+.neighborhood-details-container {
     margin: 15px;
 }

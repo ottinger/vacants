@@ -76,15 +76,26 @@ def neighborhood_list_view(request):
 # Given the neighborhood id, displays a map of the neighborhood along with properties in it.
 def neighborhood_view(request, id=None):
     try:
-        neighborhood = Neighborhood.objects.get(pk=id)
+        n = Neighborhood.objects.get(pk=id)
+        n.all_properties = n.properties.all()
+        n.properties_count = len(n.all_properties)
+        n.properties_per_sq_mi = n.properties_count / (n.boundary_area / 640)
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find neighborhood")
 
-    return map_view(
-        request,
-        neighborhood=[neighborhood],
-        properties=[x for x in Property.objects.all() if neighborhood.boundary.contains(x.latlon)]
-    )
+    properties_geojson = serialize('geojson', [x for x in Property.objects.all() if n.boundary.contains(x.latlon)],
+                                   geometry_field='latlon',
+                                   fields=('latlon', 'address', 'pk'))
+    print(properties_geojson)
+    neighborhoods_geojson = serialize('neighborhood_geojson', [n],
+                                      geometry_field='boundary',
+                                      fields=('boundary', 'name', 'type', 'pk'))
+    print(neighborhoods_geojson)
+    context = {'n': n,
+               'neighborhoods_geojson': neighborhoods_geojson,
+               'properties_geojson': properties_geojson}
+    return render(request, 'neighborhood_individual_view.html', context)
+
 
 # search_page()
 #

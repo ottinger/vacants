@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ p.address }}{% endblock %}
+{% block body %}
+    <div class="neighborhood-details-container">
+        <h2>{{ n.name }}</h2>
+        <p>{{ n.boundary_area|floatformat:2 }} acres; {{ n.properties_count }} abandoned properties
+            {% if n.all_properties %}({{ n.properties_per_sq_mi|floatformat:2 }} per square
+                mile){% endif %}</p>
+
+        {% if n.all_properties %}
+            <ul class="list-group">
+                {% for p in n.all_properties %}
+                    <li class="list-group-item"><a href="{% url "property" p.id %}">{{ p.address }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div id="mappy" class="individual-neighborhood-map"></div>
+
+        <script>
+            function getGeoJson() {
+                return {{ properties_geojson|safe }};
+            }
+
+            function getNeighborhoodsGeoJson() {
+                return {{ neighborhoods_geojson|safe }};
+            }
+
+            var neighborhoodRoot = "{% url "neighborhood" %}";
+            var propertyRoot = "{% url "property" %}";
+        </script>
+        <script src="{% static "/scripts/map.js" %}"></script>
+    </div>
+{% endblock %}
