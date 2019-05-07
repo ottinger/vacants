@@ -26,7 +26,11 @@ def individual_view(request, id=None):
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
         raise Http404("Could not find property")
-    context = {'p': property}
+    property_geojson = serialize('geojson', [property],
+                                 geometry_field='latlon',
+                                 fields=('latlon', 'address', 'pk'))
+    context = {'p': property,
+               'property_geojson': property_geojson}
     return render(request, 'individual_view.html', context)
 
 

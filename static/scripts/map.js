@@ -58,7 +58,10 @@ var properties_layer = L.geoJSON(mygeojson, {
     }
 }).addTo(mymapp);
 
-mymapp.fitBounds(neighborhoods_layer.getBounds());
+if (neighborhoods_layer.layers)
+    mymapp.fitBounds(neighborhoods_layer.getBounds()); // One or more neighborhoods
+else
+    mymapp.fitBounds(properties_layer.getBounds()); // Individual property
 
 mymapp.on('zoom', function (e) {
     var cz = mymapp.getZoom();

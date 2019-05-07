@@ -1,6 +1,11 @@
-#mappy {
+.full-page-map {
     height: calc(100% - 3.5rem);
     padding: 0px;
+}
+
+.individual-property-map {
+    height: 24rem;
+    max-width: 800px;
 }
 
 .searchbox {
