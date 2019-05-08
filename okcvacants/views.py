@@ -97,12 +97,12 @@ def neighborhood_view(request, id=None):
     return render(request, 'neighborhood_individual_view.html', context)
 
 
-# search_page()
+# neighborhood_search_page()
 #
-# Renders a search page with the list of neighborhood names.
+# Has a search box with a list of neighborhoods.
 def neighborhood_search_page(request):
     neighborhood_list = Neighborhood.objects.order_by('name')
-    return render(request, "search.html", {'neighborhood_list': neighborhood_list})
+    return render(request, "neighborhood_search.html", {'neighborhood_list': neighborhood_list})
 
 # do_neighborhood_search()
 #
@@ -118,3 +118,26 @@ def do_neighborhood_search(request):
 
     # Return result from neighborhood_view()
     return neighborhood_view(request, neighborhood.id)
+
+
+# property_search_page()
+#
+# Has a search box with a list of property addresses.
+def property_search_page(request):
+    property_list = Property.objects.order_by('address')
+    return render(request, "property_search.html", {'property_list': property_list})
+
+
+# do_neighborhood_search()
+#
+# Takes the property address, and returns the property page view.
+def do_property_search(request):
+    # Find the property id
+    property_address = request.GET.get("property_address")
+    try:
+        property = Property.objects.get(address=property_address)
+    except Neighborhood.DoesNotExist:
+        raise Http404("Could not find property")
+
+    # Return result from neighborhood_view()
+    return individual_view(request, property.id)

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search{% endblock %}
+
+{% block js_css_head %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block body %}
+    <div class="searchbox">
+        <form id="neighborhood-search-form" action="{% url "dopropertysearch" %}" method="GET">
+            <div class="ui-widget">
+                <label for="tags">Search for properties: </label>
+                <input id="tags" name="property_address">
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block bottom_scripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            var availableTags = [
+                {% for p in property_list %}
+                    "{{ p.address | safe }}",
+                {% endfor %}
+            ];
+            $("#tags").autocomplete({
+                source: availableTags,
+                select: function (event, ui) {
+                    $("#tags").val(ui.item.label);
+                    $("#neighborhood-search-form").submit()
+                }
+            });
+        });
+    </script>
+{% endblock %}
