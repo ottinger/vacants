@@ -39,7 +39,7 @@ def individual_view(request, id=None):
 # Displays a map of all neighborhoods and properties.
 def map_view(request, neighborhood=None, properties=None):
     if not neighborhood:
-        neighborhood = Neighborhood.objects.exclude(properties__isnull=True)
+        neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
     properties_geojson = serialize('geojson', properties,

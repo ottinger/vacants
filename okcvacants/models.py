@@ -30,3 +30,14 @@ class Neighborhood(models.Model):
     # Example: Mesta Park HP is overlapped by MPHHE Security. Therefore, a Property in Mesta Park
     # will have a relationship with both Neighborhoods.
     properties = models.ManyToManyField(Property)
+
+    # This is an option to enable/disable showing the neighborhood on the main map. Some of these organizations
+    # overlap multiple neighborhoods and make it hard to find more granular neighborhoods. We'll disable these for
+    # now; they can still be found on the list/search pages.
+    #
+    # Examples: Mustard Seed Development Corp, Urban Neighbors NA, Downtown OKC Inc, Friends of 10th Street,
+    # MPHHE Security, Windsor Area
+    neighborhoods_map_enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name + " (" + str(self.id) + ")"
