@@ -8,18 +8,19 @@
             <small>Declared {{ p.declared_date|date:"m/d/Y" }}</small>
         </li>
     {% endfor %}
-        <br>
-        <nav>
-            <ul class="pagination">
-                {% for i in property_list.paginator.page_range %}
-                    {% if i == property_list.number %}
-                        <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </nav>
-
     </ul>
+    <br>
+    <nav>
+        <ul class="pagination">
+            {% for i in property_list.paginator.page_range %}
+                {% if i == property_list.number %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+
+
 {% endblock %}

@@ -70,8 +70,11 @@ def neighborhood_list_view(request):
         # calculate properties per acre
         n.properties_per_sq_mi = n.properties_count / (n.boundary_area / 640)
 
+    paginator = Paginator(neighborhood_list, 100)
+    page = request.GET.get('page')
+
     template = loader.get_template('neighborhood_list_view.html')
-    return HttpResponse(template.render({'neighborhood_list': neighborhood_list}, request))
+    return HttpResponse(template.render({'neighborhood_list': paginator.get_page(page)}, request))
 
 
 # neighborhood_view()

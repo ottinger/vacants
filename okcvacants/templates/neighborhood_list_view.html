@@ -26,5 +26,17 @@
             </div>
         </li>
     {% endfor %}
+        <br>
+        <nav>
+            <ul class="pagination">
+                {% for i in neighborhood_list.paginator.page_range %}
+                    {% if i == neighborhood_list.number %}
+                        <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
 </ul>
 {% endblock %}
