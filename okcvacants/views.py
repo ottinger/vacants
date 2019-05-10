@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
+from django.core.paginator import Paginator
 
 from django.core.serializers import serialize
 
@@ -12,9 +13,11 @@ from .models import Neighborhood
 # Displays a list of properties.
 def index(request):
     property_list = Property.objects.order_by('declared_date')
+    paginator = Paginator(property_list, 100)
 
+    page = request.GET.get('page')
+    context = {'property_list': paginator.get_page(page)}
     template = loader.get_template('list_view.html')
-    context = {'property_list': property_list}
     return HttpResponse(template.render(context, request))
 
 
