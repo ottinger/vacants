@@ -24,3 +24,5 @@ The frontend uses Bootstrap for responsive layout, Leaflet for map, and jQuery/j
 * Let's import data now. Run command "python manage.py import_pdf" to get the vacant properties PDF from the City of OKC, and parse it.
 * Run command "python manage.py get_geocode" to get geocoding/coordinates for the addresses we have in the table.
 * Run command "python manage.py get_neighborhoods" to import neighborhood boundary polygons from shapefiles (included in the project).
+* Run command "python manage.py get_city_boundaries" to import city boundary polygons from shapefiles (included in the project).
+* **You should be ready to go!**
