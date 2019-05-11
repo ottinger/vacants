@@ -4,6 +4,19 @@ L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voya
     maxZoom: 20,
 }).addTo(mymapp);
 
+// Get geojson for cities
+if (getCitiesGeoJson()) {
+    var citiesGeoJson = getCitiesGeoJson();
+    var cities_layer = L.geoJSON(citiesGeoJson, {
+        style: {
+            color: "#000",
+            opacity: 0.05,
+            fillColor: "#000",
+            fillOpacity: 0.05
+        }
+    }).addTo(mymapp);
+}
+
 // Get geojson for neighborhoods
 var neighborhoodsGeoJson = getNeighborhoodsGeoJson();
 var neighborhoods_layer = L.geoJSON(neighborhoodsGeoJson, {
@@ -28,9 +41,7 @@ var neighborhoods_layer = L.geoJSON(neighborhoodsGeoJson, {
 
 // Get geojson for properties
 var mygeojson = getGeoJson();
-
 propertyRadius = 6;
-
 function propertiesStyle() {
     return {
         radius: propertyRadius,
@@ -39,7 +50,6 @@ function propertiesStyle() {
         fillOpacity: 0.3
     };
 }
-
 var properties_layer = L.geoJSON(mygeojson, {
     onEachFeature: function (feature, layer) {
         if (feature.properties && feature.properties.address) {
@@ -58,6 +68,7 @@ var properties_layer = L.geoJSON(mygeojson, {
     }
 }).addTo(mymapp);
 
+// Set bounds based on either neighborhoods layer or properties layer
 if (neighborhoods_layer._layers.length > 0)
     mymapp.fitBounds(neighborhoods_layer.getBounds()); // One or more neighborhoods
 else

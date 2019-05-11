@@ -7,6 +7,7 @@ from django.core.serializers import serialize
 
 from .models import Property
 from .models import Neighborhood
+from .models import City
 
 # index()
 #
@@ -52,8 +53,15 @@ def map_view(request, neighborhood=None, properties=None):
                                       geometry_field='boundary',
                                       fields=('boundary', 'name', 'type', 'pk'))
 
+    cities = City.objects.exclude(is_enabled=False)
+    cities_geojson = serialize('geojson', cities,
+                               geometry_field='boundary',
+                               fields=('boundary', 'name'))
+
+
     context = {'properties_geojson': properties_geojson,
-               'neighborhoods_geojson': neighborhoods_geojson}
+               'neighborhoods_geojson': neighborhoods_geojson,
+               'cities_geojson': cities_geojson}
     return render(request, "map_view.html", context)
 
 

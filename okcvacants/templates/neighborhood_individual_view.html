@@ -27,6 +27,10 @@
                 return {{ neighborhoods_geojson|safe }};
             }
 
+            function getCitiesGeoJson() {
+                return null;
+            }
+
             var neighborhoodRoot = "{% url "neighborhood" %}";
             var propertyRoot = "{% url "property" %}";
         </script>

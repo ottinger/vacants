@@ -41,3 +41,13 @@ class Neighborhood(models.Model):
 
     def __str__(self):
         return self.name + " (" + str(self.id) + ")"
+
+
+# City class for displaying municipal boundaries
+class City(models.Model):
+    name = models.CharField(max_length=150)
+    boundary = models.GeometryField()
+    is_enabled = models.BooleanField(default=False)  # For now, we are only going to show Oklahoma City's boundaries
+
+    def __str__(self):
+        return self.name

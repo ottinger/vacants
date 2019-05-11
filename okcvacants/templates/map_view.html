@@ -7,16 +7,20 @@
     <div id="mappy" class="full-page-map"></div>
 
     <script>
-    function getGeoJson() {
-        return {{ properties_geojson|safe }};
-    }
+        function getGeoJson() {
+            return {{ properties_geojson|safe }};
+        }
 
-    function getNeighborhoodsGeoJson() {
-        return {{ neighborhoods_geojson|safe }};
-    }
+        function getNeighborhoodsGeoJson() {
+            return {{ neighborhoods_geojson|safe }};
+        }
 
-    var neighborhoodRoot = "{% url "neighborhood" %}";
-    var propertyRoot = "{% url "property" %}";
-</script>
+        function getCitiesGeoJson() {
+            return {{ cities_geojson|safe }};
+        }
+
+        var neighborhoodRoot = "{% url "neighborhood" %}";
+        var propertyRoot = "{% url "property" %}";
+    </script>
 <script src="{% static "/scripts/map.js" %}"></script>
 {% endblock %}
