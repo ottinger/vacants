@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         okcvacants.models.Neighborhood.objects.all().delete()  # clear the Neighborhood table
 
-        ds = DataSource(PROJECT_ROOT + "/neighborhoods_shapefiles/okc_neighborhoods.dbf")
+        ds = DataSource(PROJECT_ROOT + "/misc_files/neighborhoods_shapefiles/okc_neighborhoods.dbf")
 
         mapping = {'name': 'Associatio',
                    'type': 'Type',

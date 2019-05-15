@@ -18,7 +18,7 @@ class Command(BaseCommand):
     help = "Parses city boundaries from SHP/DBF format files."
 
     def handle(self, *args, **options):
-        ds = DataSource(PROJECT_ROOT + "/city_boundaries_shapefiles/city_boundaries.dbf")
+        ds = DataSource(PROJECT_ROOT + "/misc_files/city_boundaries_shapefiles/city_boundaries.dbf")
 
         mapping = {'name': 'City_Name',
                    'boundary': 'POLYGON'}
