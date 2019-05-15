@@ -17,7 +17,7 @@ from django.core.management.base import BaseCommand
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
 django.setup()
 
-import okcvacants.models
+from okcvacants.models import Property
 
 
 class Command(BaseCommand):
@@ -51,7 +51,7 @@ class Command(BaseCommand):
         date_regex = r'^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$'
         ward_number_regex = r'^[0-9]+$'  # support >1 digit for flexibility though there are 8 wards
 
-        print(reader.getNumPages())
+        pdf_property_list = []  # We'll store the Propertys in this list temporarily
         for i in range(reader.getNumPages()):
             # Now do our magic!
             pageObj = reader.getPage(i)
@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 # Case number means we're starting on a new record. Create a new record.
                 if re.match(case_number_regex, l):
                     print(l)
-                    p = okcvacants.models.Property()
+                    p = Property()
                     p.case_number = l
                     p.address = ""
                     case_number_found = True  # we're processing a record now
@@ -101,7 +101,21 @@ class Command(BaseCommand):
 
                     case_number_found = False  # done processing record
                     date_found = False
-                    p.save()
+                    pdf_property_list.append(p)
                     print(vars(p))
+
+        # Now we'll go through pdf_property_list, and existing Property objects in the table.
+        db_case_numbers = [p.case_number for p in Property.objects.all()]
+        pdf_case_numbers = [p.case_number for p in pdf_property_list]
+
+        # Find existing Property objects that are NOT in the PDF list, and remove them
+        for p in Property.objects.all():
+            if p.case_number not in pdf_case_numbers:
+                Property.objects.filter(case_number=p.case_number).delete()
+        # Find Property case numbers from the PDF that are NOT existing, and add them.
+        for p in pdf_property_list:
+            if p.case_number not in db_case_numbers:
+                p.save()
+
 
         self.stdout.write("PDF parsing completed")
