@@ -23,13 +23,27 @@ import okcvacants.models
 class Command(BaseCommand):
     help = "Imports data from the OKC abandoned building registry PDF."
 
+    def add_arguments(self, parser):
+        parser.add_argument('-u', '--url', type=str, help='URL for the location of the abandoned properties PDF')
+        parser.add_argument('-f', '--filename', type=str, help='Filename for the abandoned properties PDF')
     def handle(self, *args, **options):
+        if options['filename']:
+            f = open(options['filename'], "rb")
+        elif options['url']:
+            url = options['url']
+        else:
+            url = "https://www.okc.gov/home/showdocument?id=5517"
 
-        # Get the file, and use BytesIO to make it accessible from memory like a real file
-        r = requests.get("https://www.okc.gov/home/showdocument?id=5517", stream=True)
-        pdf_data = io.BytesIO()
-        pdf_data.write(r.content)
+        if options['filename']:
+            self.parse_pdf(f)
+        else:
+            # Get the file, and use BytesIO to make it accessible from memory like a real file
+            r = requests.get(url, stream=True)
+            pdf_data = io.BytesIO()
+            pdf_data.write(r.content)
+            self.parse_pdf(pdf_data)
 
+    def parse_pdf(self, pdf_data):
         # Create PyPDF2 reader
         reader = PyPDF2.PdfFileReader(pdf_data)
 
@@ -37,6 +51,7 @@ class Command(BaseCommand):
         date_regex = r'^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$'
         ward_number_regex = r'^[0-9]+$'  # support >1 digit for flexibility though there are 8 wards
 
+        print(reader.getNumPages())
         for i in range(reader.getNumPages()):
             # Now do our magic!
             pageObj = reader.getPage(i)
