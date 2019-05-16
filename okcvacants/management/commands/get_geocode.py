@@ -44,12 +44,13 @@ class Command(BaseCommand):
             raise Exception("Mapbox API key not specified")
 
         for o in okcvacants.models.Property.objects.all():
-            if (o.corrected_address):
-                geocode = get_geocode(o.corrected_address, api_key)
-            else:
-                geocode = get_geocode(o.address, api_key)
-            o.lat = geocode[1]
-            o.lon = geocode[0]
-            o.latlon = Point(geocode[0], geocode[1])
-            o.save()
-            print(geocode)
+            if not o.latlon:
+                if (o.corrected_address):
+                    geocode = get_geocode(o.corrected_address, api_key)
+                else:
+                    geocode = get_geocode(o.address, api_key)
+                o.lat = geocode[1]
+                o.lon = geocode[0]
+                o.latlon = Point(geocode[0], geocode[1])
+                o.save()
+                print(geocode)

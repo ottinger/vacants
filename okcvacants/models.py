@@ -12,11 +12,14 @@ class Property(models.Model):
     ward_number = models.IntegerField()
     parcel_number = models.IntegerField()  # This is OKC's parcel number, not to be confused with County Assessor's!
 
-    latlon = models.PointField(default=Point(0, 0))
+    latlon = models.PointField(blank=True, null=True)
 
     # If the address is incorrectly formatted or the geocoder chokes on it, we'll manually set it here (while
     # keeping the original). For example, the geocoder thinks one of the addresses is near Kansas City.
     corrected_address = models.CharField(max_length=150, null=True)
+
+    def __str__(self):
+        return self.address
 
 class Neighborhood(models.Model):
     name = models.CharField(max_length=150)

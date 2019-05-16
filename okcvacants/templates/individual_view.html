@@ -10,26 +10,30 @@
             <b>Declared Date: </b>{{ p.declared_date|date:"m/d/Y" }}<br>
             <b>Ward: </b>{{ p.ward_number }}<br>
             <b>Parcel Number: </b>{{ p.parcel_number }}<br>
-            <b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})
+            {% if p.latlon.coords %}
+                <b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})
+            {% endif %}
         </p>
-        <div id="mappy" class="individual-property-map"></div>
+        {% if p.latlon.coords %}
+            <div id="mappy" class="individual-property-map"></div>
 
-        <script>
-            function getGeoJson() {
-                return {{ property_geojson|safe }};
-            }
+            <script>
+                function getGeoJson() {
+                    return {{ property_geojson|safe }};
+                }
 
-            function getNeighborhoodsGeoJson() {
-                return null;
-            }
+                function getNeighborhoodsGeoJson() {
+                    return null;
+                }
 
-            function getCitiesGeoJson() {
-                return null;
-            }
+                function getCitiesGeoJson() {
+                    return null;
+                }
 
-            var neighborhoodRoot = "{% url "neighborhood" %}";
-            var propertyRoot = "{% url "property" %}";
-        </script>
-        <script src="{% static "/scripts/map.js" %}"></script>
+                var neighborhoodRoot = "{% url "neighborhood" %}";
+                var propertyRoot = "{% url "property" %}";
+            </script>
+            <script src="{% static "/scripts/map.js" %}"></script>
+        {% endif %}
     </div>
 {% endblock %}
