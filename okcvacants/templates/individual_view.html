@@ -10,6 +10,13 @@
             <b>Declared Date: </b>{{ p.declared_date|date:"m/d/Y" }}<br>
             <b>Ward: </b>{{ p.ward_number }}<br>
             <b>Parcel Number: </b>{{ p.parcel_number }}<br>
+            {% if property_neighborhoods %}
+                <b>Neighborhoods: </b>
+                {% for n in property_neighborhoods %}
+                    <a href="{% url "neighborhood" n.id %}">{{ n.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                <br>
+            {% endif %}
             {% if p.latlon.coords %}
                 <b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})
             {% endif %}

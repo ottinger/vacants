@@ -33,8 +33,10 @@ def individual_view(request, id=None):
     property_geojson = serialize('geojson', [property],
                                  geometry_field='latlon',
                                  fields=('latlon', 'address', 'pk'))
+    property_neighborhoods = Neighborhood.objects.filter(properties__id=id)
     context = {'p': property,
-               'property_geojson': property_geojson}
+               'property_geojson': property_geojson,
+               'property_neighborhoods': property_neighborhoods}
     return render(request, 'individual_view.html', context)
 
 
