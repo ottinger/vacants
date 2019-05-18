@@ -69,7 +69,7 @@ var properties_layer = L.geoJSON(mygeojson, {
 }).addTo(mymapp);
 
 // Set bounds based on either neighborhoods layer or properties layer
-if (neighborhoods_layer._layers.length > 0)
+if (neighborhoods_layer.getLayers().length > 0)
     mymapp.fitBounds(neighborhoods_layer.getBounds()); // One or more neighborhoods
 else
     mymapp.fitBounds(properties_layer.getBounds()); // Individual property
