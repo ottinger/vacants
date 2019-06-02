@@ -151,7 +151,7 @@ def do_property_search(request):
     # Find the property id
     property_address = request.GET.get("property_address")
     try:
-        property = Property.objects.get(address=property_address)
+        property = Property.objects.get(short_address=property_address)
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find property")
 
