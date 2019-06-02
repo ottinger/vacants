@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
         case_number_regex = r'^C[0-9]{2}-[0-9]{5}$'
         date_regex = r'^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$'
-        ward_number_regex = r'^[0-9]+$'  # support >1 digit for flexibility though there are 8 wards
+        short_address_regex = r'^(.*[a-zA-Z0-9])\s+OKLAHOMA CITY'
 
         pdf_property_list = []  # We'll store the Propertys in this list temporarily
         for i in range(reader.getNumPages()):
@@ -81,6 +81,15 @@ class Command(BaseCommand):
                 elif case_number_found and not date_found and not re.match(date_regex, l):
                     p.address += l + " "
                 elif case_number_found and re.match(date_regex, l):
+                    # Do some stuff to the address.
+                    p.address = p.address[:-1]  # Remove space at end
+                    short_address_match = re.match(short_address_regex, p.address, re.IGNORECASE)
+                    if short_address_match:
+                        p.short_address = short_address_match.group(1)
+                    else:
+                        p.short_address = p.address
+
+                    # Add the date.
                     date_found = True
                     p.declared_date = datetime.datetime.strptime(l, "%m/%d/%Y").date()
                     pass  # we need to process date

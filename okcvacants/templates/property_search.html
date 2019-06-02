@@ -25,7 +25,7 @@
         $(function () {
             var availableTags = [
                 {% for p in property_list %}
-                    "{{ p.address | safe }}",
+                    "{{ p.short_address | safe }}",
                 {% endfor %}
             ];
             $("#tags").autocomplete({

@@ -12,7 +12,7 @@ def forwards(app, schema_editor):
     address_regex = r'^(.*[a-zA-Z0-9])\s+OKLAHOMA CITY'
 
     for p in Property.objects.all():
-        address_match = re.match(address_regex, p.address)
+        address_match = re.match(address_regex, p.address, re.IGNORECASE)
         if address_match:
             p.short_address = address_match.group(1)
         else:
