@@ -157,3 +157,7 @@ def do_property_search(request):
 
     # Return result from neighborhood_view()
     return individual_view(request, property.id)
+
+
+def about_page(request):
+    return render(request, 'about.html')

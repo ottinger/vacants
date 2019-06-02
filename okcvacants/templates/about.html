@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}
+    About
+{% endblock %}
+{% block body %}
+    <div class="searchbox">
+        <h2>About OKC Vacants</h2>
+
+        <p>
+            OKC Vacants is a mapping web app containing information on properties on the City of Oklahoma City's <a
+                href="https://www.okc.gov/departments/development-services/code-enforcement/abandoned-buildings">Abandoned
+            Buildings</a> list.
+            <b>This website is not affiliated with the City of Oklahoma City</b>; all I do is take the vacant property
+            data posted by the City and turn it into a map.
+        </p>
+        <h3>Reporting Properties</h3>
+        <p>
+            If you would like to report properties that should (or should not) be on the abandoned properties registry,
+            I would suggest contacting the City's <a href="https://www.okc.gov/residents/action-center">Action
+            Center</a>.
+            The map will be updated after the abandoned properties list on the City's website is updated.
+        </p>
+        <h3>Coverage Area</h3>
+        <p>Please note that <b>the map only covers abandoned properties within the incorporated city limits of Oklahoma
+            City.</b>
+            These city limits are shaded in light gray.
+            This does not include areas in municipalities bordering or within Oklahoma City, nor does it include
+            unincorporated areas.
+            However, it may include areas of Oklahoma City with postal addresses in areas like Edmond or Yukon.
+        </p>
+
+        <h3>Technical Stuff</h3>
+        <p>OKC Vacants is a custom web app. The backend was built with the Django web application framework and Python
+            programming language and a Postgres/PostGIS database.
+            The PyPDF2 library is used to parse the abandoned properties list from the City of OKC.
+            Frontend was built using Bootstrap (for layout), Leaflet (for the map), and the jQuery library.</p>
+        <p>The source code for this app is <a href="https://github.com/ottinger/vacants">available on GitHub</a>.</p>
+    </div>
+{% endblock %}

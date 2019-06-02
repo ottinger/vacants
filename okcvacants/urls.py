@@ -14,5 +14,6 @@ urlpatterns = [
     path("neighborhoodsearch/", views.neighborhood_search_page, name="neighborhoodsearch"),
     path("doneighborhoodsearch/", views.do_neighborhood_search, name="doneighborhoodsearch"),
     path("propertysearch/", views.property_search_page, name="propertysearch"),
-    path("dopropertysearch/", views.do_property_search, name="dopropertysearch")
+    path("dopropertysearch/", views.do_property_search, name="dopropertysearch"),
+    path("about/", views.about_page, name="aboutpage")
 ]
