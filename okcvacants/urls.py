@@ -15,5 +15,6 @@ urlpatterns = [
     path("doneighborhoodsearch/", views.do_neighborhood_search, name="doneighborhoodsearch"),
     path("propertysearch/", views.property_search_page, name="propertysearch"),
     path("dopropertysearch/", views.do_property_search, name="dopropertysearch"),
+    path("export/csv/", views.export_csv, name="exportcsv"),
     path("about/", views.about_page, name="aboutpage")
 ]

@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 
 from django.core.serializers import serialize
 
+import csv
+
 from .models import Property
 from .models import Neighborhood
 from .models import City
@@ -158,6 +160,18 @@ def do_property_search(request):
     # Return result from neighborhood_view()
     return individual_view(request, property.id)
 
+
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="vacants.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['case_number', 'address', 'declared_date', 'ward_number', 'parcel_number', 'lon', 'lat'])
+    for p in Property.objects.all():
+        writer.writerow([p.case_number, p.address, p.declared_date, p.ward_number, p.parcel_number,
+                         p.latlon[0], p.latlon[1]])
+
+    return response
 
 def about_page(request):
     return render(request, 'about.html')
