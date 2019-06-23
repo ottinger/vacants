@@ -11,6 +11,32 @@ from .models import Property
 from .models import Neighborhood
 from .models import City
 
+
+# map_view()
+#
+# Displays a map of all neighborhoods and properties.
+def map_view(request, neighborhood=None, properties=None):
+    if not neighborhood:
+        neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
+        properties = Property.objects.all()
+
+    properties_geojson = serialize('geojson', properties,
+                                   geometry_field='latlon',
+                                   fields=('latlon', 'address', 'pk'))
+    neighborhoods_geojson = serialize('neighborhood_geojson', neighborhood,
+                                      geometry_field='boundary',
+                                      fields=('boundary', 'name', 'type', 'pk'))
+
+    cities = City.objects.exclude(is_enabled=False)
+    cities_geojson = serialize('geojson', cities,
+                               geometry_field='boundary',
+                               fields=('boundary', 'name'))
+
+    context = {'properties_geojson': properties_geojson,
+               'neighborhoods_geojson': neighborhoods_geojson,
+               'cities_geojson': cities_geojson}
+    return render(request, "map_view.html", context)
+
 # index()
 #
 # Displays a list of properties.
@@ -42,32 +68,27 @@ def individual_view(request, id=None):
     return render(request, 'individual_view.html', context)
 
 
-# map_view()
+# property_search_page()
 #
-# Displays a map of all neighborhoods and properties.
-def map_view(request, neighborhood=None, properties=None):
-    if not neighborhood:
-        neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
-        properties = Property.objects.all()
-
-    properties_geojson = serialize('geojson', properties,
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address', 'pk'))
-    neighborhoods_geojson = serialize('neighborhood_geojson', neighborhood,
-                                      geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type', 'pk'))
-
-    cities = City.objects.exclude(is_enabled=False)
-    cities_geojson = serialize('geojson', cities,
-                               geometry_field='boundary',
-                               fields=('boundary', 'name'))
+# Has a search box with a list of property addresses.
+def property_search_page(request):
+    property_list = Property.objects.order_by('address')
+    return render(request, "property_search.html", {'property_list': property_list})
 
 
-    context = {'properties_geojson': properties_geojson,
-               'neighborhoods_geojson': neighborhoods_geojson,
-               'cities_geojson': cities_geojson}
-    return render(request, "map_view.html", context)
+# do_property_search()
+#
+# Takes the property address, and returns the property page view.
+def do_property_search(request):
+    # Find the property id
+    property_address = request.GET.get("property_address")
+    try:
+        property = Property.objects.get(short_address=property_address)
+    except Neighborhood.DoesNotExist:
+        raise Http404("Could not find property")
 
+    # Return result from neighborhood_view()
+    return individual_view(request, property.id)
 
 # neighborhood_list_view()
 #
@@ -138,29 +159,9 @@ def do_neighborhood_search(request):
     return neighborhood_view(request, neighborhood.id)
 
 
-# property_search_page()
+# export_csv()
 #
-# Has a search box with a list of property addresses.
-def property_search_page(request):
-    property_list = Property.objects.order_by('address')
-    return render(request, "property_search.html", {'property_list': property_list})
-
-
-# do_neighborhood_search()
-#
-# Takes the property address, and returns the property page view.
-def do_property_search(request):
-    # Find the property id
-    property_address = request.GET.get("property_address")
-    try:
-        property = Property.objects.get(short_address=property_address)
-    except Neighborhood.DoesNotExist:
-        raise Http404("Could not find property")
-
-    # Return result from neighborhood_view()
-    return individual_view(request, property.id)
-
-
+# Returns a CSV file containing data on all properties.
 def export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="vacants.csv"'
@@ -173,5 +174,9 @@ def export_csv(request):
 
     return response
 
+
+# about_page()
+#
+# Displays the about page from ./templates/about.html
 def about_page(request):
     return render(request, 'about.html')

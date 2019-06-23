@@ -7,7 +7,9 @@ import os
 import datetime
 
 
-# Create your tests here.
+# ImportPDFTestCase
+#
+# Contains tests to ensure that importing the vacant properties PDF file works properly.
 class ImportPDFTestCase(TestCase):
     def setUp(self):
         # Fake Property for testing purposes (Devon Tower). We won't save it yet though.
