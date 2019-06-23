@@ -37,10 +37,11 @@ def map_view(request, neighborhood=None, properties=None):
                'cities_geojson': cities_geojson}
     return render(request, "map_view.html", context)
 
-# index()
+
+# property_list_view()
 #
 # Displays a list of properties.
-def index(request):
+def property_list_view(request):
     property_list = Property.objects.order_by('declared_date')
     paginator = Paginator(property_list, 100)
 
@@ -50,10 +51,10 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-# individual_view()
+# property_view()
 #
 # Displays details for an individual property (presently no map)
-def individual_view(request, id=None):
+def property_view(request, id=None):
     try:
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
@@ -88,7 +89,7 @@ def do_property_search(request):
         raise Http404("Could not find property")
 
     # Return result from neighborhood_view()
-    return individual_view(request, property.id)
+    return property_view(request, property.id)
 
 # neighborhood_list_view()
 #
