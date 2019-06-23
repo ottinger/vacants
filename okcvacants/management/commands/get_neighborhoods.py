@@ -40,7 +40,7 @@ class Command(BaseCommand):
             # neighborhoods_map_enabled to False
             map_disabled_names = ["Downtown Oklahoma City Inc", "Friends of 10th Street", "MPHHE Security",
                                   "Mustard Seed Development Corporation", "Urban Neighbors NA",
-                                  "Windsor Area"]
+                                  "Windsor Area", "Envision 240"]
             if n.name in map_disabled_names:
                 n.neighborhoods_map_enabled = False
 
