@@ -4,9 +4,12 @@
 {% block body %}
     <div class="neighborhood-details-container">
         <h2>{{ n.name }}</h2>
-        <p>{{ n.boundary_area|floatformat:2 }} acres; {{ n.properties_count }} abandoned properties
+        <p>
+            {{ n.boundary_area|floatformat:2 }} acres; {{ n.properties_count }} abandoned
+            {% if n.properties_count == 1 %} property{% else %} properties{% endif %}
             {% if n.all_properties %}({{ n.properties_per_sq_mi|floatformat:2 }} per square
-                mile){% endif %}</p>
+                mile){% endif %}
+        </p>
 
         {% if n.all_properties %}
             <ul class="list-group">

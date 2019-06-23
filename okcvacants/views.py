@@ -47,7 +47,7 @@ def property_list_view(request):
 
     page = request.GET.get('page')
     context = {'property_list': paginator.get_page(page)}
-    template = loader.get_template('list_view.html')
+    template = loader.get_template('property_list_view.html')
     return HttpResponse(template.render(context, request))
 
 
@@ -66,7 +66,7 @@ def property_view(request, id=None):
     context = {'p': property,
                'property_geojson': property_geojson,
                'property_neighborhoods': property_neighborhoods}
-    return render(request, 'individual_view.html', context)
+    return render(request, 'property_individual_view.html', context)
 
 
 # property_search_page()
