@@ -1,6 +1,4 @@
-from django.db import models
 from django.contrib.gis.db import models
-from django.contrib.gis.geos import Point
 
 # Create your models here.
 class Property(models.Model):
@@ -14,6 +12,8 @@ class Property(models.Model):
     parcel_number = models.IntegerField()  # This is OKC's parcel number, not to be confused with County Assessor's!
 
     latlon = models.PointField(blank=True, null=True)
+
+    census_tract = models.ForeignKey('CensusTract', null=True, blank=True, on_delete=models.SET_NULL)
 
     # If the address is incorrectly formatted or the geocoder chokes on it, we'll manually set it here (while
     # keeping the original). For example, the geocoder thinks one of the addresses is near Kansas City.
@@ -55,3 +55,10 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CensusTract(models.Model):
+    geoid = models.CharField(max_length=150, unique=True)  # census bureau GEOID
+    name = models.CharField(max_length=150)
+    county = models.IntegerField()  # Census county code
+    boundary = models.GeometryField()
