@@ -63,7 +63,7 @@ class Command(BaseCommand):
                     tract.boundary = GEOSGeometry(json.dumps(request_json['features'][0]['geometry']))
                     tract.save()
 
-                o.CensusTract = tract
+                o.census_tract = tract
                 o.save()
 
             else:

@@ -10,6 +10,9 @@
             <b>Declared Date: </b>{{ p.declared_date|date:"m/d/Y" }}<br>
             <b>Ward: </b>{{ p.ward_number }}<br>
             <b>Parcel Number: </b>{{ p.parcel_number }}<br>
+            {% if p.census_tract %}
+                <b>Census tract: </b>{{ p.census_tract.name }}<br>
+            {% endif %}
             {% if property_neighborhoods %}
                 <b>Neighborhoods: </b>
                 {% for n in property_neighborhoods %}
