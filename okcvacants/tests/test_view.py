@@ -38,3 +38,9 @@ class PropertyViewTestCase(TestCase):
         self.assertContains(response, "2501 W MEMORIAL RD")  # short or long address is ok
         self.assertContains(response, "01/01/2019")  # declared date
         self.assertContains(response, reverse('property', kwargs={'id': self.p.id}))  # url to individual view
+
+    def test_map_view(self):
+        response = self.client.get(reverse('map'))
+
+        self.assertContains(response, "2501 W MEMORIAL RD")  # short or long address is ok
+        self.assertContains(response, "[35.613333, -97.558333]")  # coordinates (in javascript)
