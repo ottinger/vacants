@@ -16,7 +16,7 @@
                 integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
                 crossorigin=""></script>
     {% endblock %}
-    <link rel="stylesheet" href="{% static "/css/style.css" %}"></link>
+    <link rel="stylesheet" href="{% static "/css/style.css" %}">
 </head>
 <body>
 {% block navbar %}
@@ -31,7 +31,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="neighborhoods-dropdown" role="button"
                        data-toggle="dropdown">Neighborhoods</a>
-                    <div class="dropdown-menu" aria-labbeledby="neighborhoods-dropdown">
+                    <div class="dropdown-menu" aria-labelledby="neighborhoods-dropdown">
                         <a class="dropdown-item" href="{% url "neighborhoods" %}">List all...</a>
                         <a class="dropdown-item" href="{% url "neighborhoodsearch" %}">Search</a>
                     </div>
