@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
 
 # Django doesn't serve static files on its own when DEBUG is set to False; that's what
 # whitenoise does. (Otherwise we get 500 errors)
@@ -27,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY', 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$og4zlo(b')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Verbose logging - used to investigate 500 errors that creep up after we set DEBUG to False
 # Example: "Missing staticfiles manifest entry for '/css/style.css'"
@@ -158,6 +157,7 @@ GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 if (os.getenv('IS_HEROKU')):
     # staticfiles is set to False: django_heroku sets the STATICFILES_STORAGE variable, which seems to be
     # causing problems (and we've got staticfiles configured already)
+    import django_heroku
     django_heroku.settings(locals(), staticfiles=False)
 
 if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
