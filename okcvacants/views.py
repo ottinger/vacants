@@ -4,6 +4,7 @@ from django.template import loader
 from django.core.paginator import Paginator
 
 from django.core.serializers import serialize
+from djgeojson.serializers import Serializer as GeoJSONSerializer
 
 import csv
 
@@ -17,20 +18,15 @@ from .models import City
 # Displays a map of all neighborhoods and properties.
 def map_view(request, neighborhood=None, properties=None):
     if not neighborhood:
-        neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
+        # neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
+        neighborhood = Neighborhood.objects.exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
-    properties_geojson = serialize('geojson', properties,
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address', 'pk'))
-    neighborhoods_geojson = serialize('neighborhood_geojson', neighborhood,
-                                      geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type', 'pk'))
+    properties_geojson = GeoJSONSerializer().serialize(properties, geometry_field='latlon', use_natural_keys=True, with_modelname=False)
+    neighborhoods_geojson = GeoJSONSerializer().serialize(neighborhood, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
 
     cities = City.objects.exclude(is_enabled=False)
-    cities_geojson = serialize('geojson', cities,
-                               geometry_field='boundary',
-                               fields=('boundary', 'name'))
+    cities_geojson = GeoJSONSerializer().serialize(cities, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
 
     context = {'properties_geojson': properties_geojson,
                'neighborhoods_geojson': neighborhoods_geojson,
@@ -59,10 +55,11 @@ def property_view(request, id=None):
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
         raise Http404("Could not find property")
-    property_geojson = serialize('geojson', [property],
-                                 geometry_field='latlon',
-                                 fields=('latlon', 'address', 'pk'))
-    property_neighborhoods = Neighborhood.objects.filter(properties__id=id)
+    property_geojson = property.latlon
+    # property_geojson = serialize('geojson', [property],
+    #                              geometry_field='latlon',
+    #                              fields=('latlon', 'address', 'pk'))
+    property_neighborhoods = []
     context = {'p': property,
                'property_geojson': property_geojson,
                'property_neighborhoods': property_neighborhoods}

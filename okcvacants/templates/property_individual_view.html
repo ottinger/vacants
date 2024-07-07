@@ -17,11 +17,11 @@
                 {% endfor %}
                 <br>
             {% endif %}
-            {% if p.latlon.coords %}
-                <b>Coordinates: </b>({{ p.latlon.coords.1 }}, {{ p.latlon.coords.0 }})
+            {% if p.latlon %}
+                <b>Coordinates: </b>({{ p.latlon.coordinates.1 }}, {{ p.latlon.coordinates.0 }})
             {% endif %}
         </p>
-        {% if p.latlon.coords %}
+        {% if p.latlon %}
             <div id="mappy" class="individual-property-map"></div>
 
             <script>
