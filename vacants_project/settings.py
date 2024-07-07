@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'okcvacants.apps.OkcvacantsConfig',
+    'djgeojson'
 ]
 
 MIDDLEWARE = [
@@ -89,16 +90,20 @@ WSGI_APPLICATION = 'vacants_project.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    #     'NAME': 'vacants',
+    #     'USER': 'geodjango',
+    #     'PASSWORD': '123456',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',
+    #     'TEST': {
+    #         'NAME': 'test_vacants'
+    #     }
+    # }
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vacants',
-        'USER': 'geodjango',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'TEST': {
-            'NAME': 'test_vacants'
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'sqlite_test_db.sqlite3',
     }
 }
 
@@ -160,7 +165,7 @@ if (os.getenv('IS_HEROKU')):
     import django_heroku
     django_heroku.settings(locals(), staticfiles=False)
 
-if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-elif DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'
+# if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
+#     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+# elif DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+#     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'

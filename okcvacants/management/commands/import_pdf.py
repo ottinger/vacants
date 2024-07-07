@@ -34,11 +34,15 @@ class Command(BaseCommand):
         else:
             url = "https://www.okc.gov/home/showpublisheddocument/22796/637807047196200000"
 
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+        }
+
         if options['filename']:
             self.parse_pdf(f)
         else:
             # Get the file, and use BytesIO to make it accessible from memory like a real file
-            r = requests.get(url, stream=True)
+            r = requests.get(url, headers=headers, stream=True)
             pdf_data = io.BytesIO()
             pdf_data.write(r.content)
             self.parse_pdf(pdf_data)

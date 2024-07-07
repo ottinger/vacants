@@ -51,6 +51,10 @@ class Command(BaseCommand):
                     geocode = get_geocode(o.address, api_key)
                 o.lat = geocode[1]
                 o.lon = geocode[0]
-                o.latlon = Point(geocode[0], geocode[1])
+                # o.latlon = Point(geocode[0], geocode[1])
+                o.latlon = {
+                    'type': 'Point',
+                    'coordinates': [geocode[0], geocode[1]]
+                }
                 o.save()
                 print(geocode)
