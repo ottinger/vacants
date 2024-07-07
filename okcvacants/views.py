@@ -22,7 +22,7 @@ def map_view(request, neighborhood=None, properties=None):
         neighborhood = Neighborhood.objects.exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
-    properties_geojson = GeoJSONSerializer().serialize(properties, geometry_field='latlon', use_natural_keys=True, with_modelname=False)
+    properties_geojson = GeoJSONSerializer().serialize(properties, properties=['latlon'], geometry_field='latlon', use_natural_keys=True, with_modelname=False)
     neighborhoods_geojson = GeoJSONSerializer().serialize(neighborhood, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
 
     cities = City.objects.exclude(is_enabled=False)
