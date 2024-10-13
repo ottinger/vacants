@@ -21,7 +21,7 @@ The frontend uses Bootstrap for responsive layout, Leaflet for map, and jQuery/j
 * Add the git repo, and deploy.
 * Now it's time to set up the database. Install the Heroku Postgres addon.
 * Run command "python manage.py migrate" to migrate databases.
-* Let's import data now. Run command "python manage.py import_pdf" to get the vacant properties PDF from the City of OKC, and parse it.
+* Let's import data now. Run command "python manage.py import_pdf --filename misc_files/AbandonedSep2024.pdf" to read the vacant properties PDF from the City of OKC, and parse it.
 * Run command "python manage.py get_geocode" to get geocoding/coordinates for the addresses we have in the table.
 * Run command "python manage.py get_neighborhoods" to import neighborhood boundary polygons from shapefiles (included in the project).
 * Run command "python manage.py get_city_boundaries" to import city boundary polygons from shapefiles (included in the project).

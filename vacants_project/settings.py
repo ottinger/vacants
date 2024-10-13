@@ -91,17 +91,7 @@ WSGI_APPLICATION = 'vacants_project.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    #     'NAME': 'vacants',
-    #     'USER': 'geodjango',
-    #     'PASSWORD': '123456',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    #     'TEST': {
-    #         'NAME': 'test_vacants'
-    #     }
-    # }
+    # TODO: setup postgresql for heroku
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'sqlite_test_db.sqlite3',
@@ -153,8 +143,7 @@ STATICFILES_DIRS = (
 
 # serializers
 SERIALIZATION_MODULES = {
-    "geojson": "django.contrib.gis.serializers.geojson",
-    "neighborhood_geojson": "okcvacants.neighborhood_geojson_serializer"
+    "geojson": "django.contrib.gis.serializers.geojson"
 }
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
@@ -165,7 +154,3 @@ if (os.getenv('IS_HEROKU')):
     # causing problems (and we've got staticfiles configured already)
     django_on_heroku.settings(locals(), staticfiles=False)
 
-# if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
-#     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-# elif DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-#     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'
