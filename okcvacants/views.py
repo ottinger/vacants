@@ -17,8 +17,7 @@ from .models import City
 # Displays a map of all neighborhoods and properties.
 def map_view(request, neighborhood=None, properties=None):
     if not neighborhood:
-        # neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
-        neighborhood = Neighborhood.objects.exclude(neighborhoods_map_enabled=False)
+        neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
     properties_geojson = GeoJSONSerializer().serialize(properties, properties=['latlon', 'pk','address'],
