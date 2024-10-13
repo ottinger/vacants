@@ -10,13 +10,13 @@ The frontend uses Bootstrap for responsive layout, Leaflet for map, and jQuery/j
 
 * Create your project/app on Heroku.
 * Set environment variables:
-    * BUILD_WITH_GEO_LIBRARIES=1
     * IS_HEROKU=1
     * SECRET_KEY
         * Secret key that you will need to generate.
     * MAPBOX_KEY
         * API key for Mapbox API. Necessary to get coordinates for addresses.
 * Before you try to build this project, you will need to add the Heroku apt buildpack from https://github.com/heroku/heroku-buildpack-apt. This is required to install the GDAL library (gdal-bin) necessary to work with geospatial data. The library name is specified in Aptfile, and Heroku will automatically install it if you have the apt buildpack.
+* You will also need to add the Heroku Geo Buildpack from https://github.com/heroku/heroku-geo-buildpack
 * Also add the official Python buildpack.
 * Add the git repo, and deploy.
 * Now it's time to set up the database. Install the Heroku Postgres addon.
