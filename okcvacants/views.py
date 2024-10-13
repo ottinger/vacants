@@ -3,7 +3,6 @@ from django.http import HttpResponse, Http404
 from django.template import loader
 from django.core.paginator import Paginator
 
-from django.core.serializers import serialize
 from djgeojson.serializers import Serializer as GeoJSONSerializer
 
 import csv
@@ -120,13 +119,19 @@ def neighborhood_view(request, id=None):
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find neighborhood")
 
-    properties_geojson = serialize('geojson', [x for x in Property.objects.all() if n.boundary.contains(x.latlon)],
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address', 'pk'))
+    props = [x for x in n.properties.all()]
+    properties_geojson = GeoJSONSerializer().serialize(props,
+                                                       properties=['latlon', 'address', 'pk'],
+                                                       geometry_field='latlon',
+                                                       use_natural_keys=True,
+                                                       with_modelname=False)
     print(properties_geojson)
-    neighborhoods_geojson = serialize('neighborhood_geojson', [n],
-                                      geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type', 'pk'))
+    # TODO: Need to add property_density, property_count. See neighborhood_geojson_serializer.py
+    neighborhoods_geojson = GeoJSONSerializer().serialize([n],
+                                                          properties=['boundary', 'type', 'name', 'pk', 'boundary_area'],
+                                                          geometry_field='boundary',
+                                                          use_natural_keys=True,
+                                                          with_modelname=False)
     print(neighborhoods_geojson)
     context = {'n': n,
                'neighborhoods_geojson': neighborhoods_geojson,
