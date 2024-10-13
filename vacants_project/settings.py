@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_on_heroku
 
 # Django doesn't serve static files on its own when DEBUG is set to False; that's what
 # whitenoise does. (Otherwise we get 500 errors)
@@ -162,8 +163,7 @@ GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 if (os.getenv('IS_HEROKU')):
     # staticfiles is set to False: django_heroku sets the STATICFILES_STORAGE variable, which seems to be
     # causing problems (and we've got staticfiles configured already)
-    import django_heroku
-    django_heroku.settings(locals(), staticfiles=False)
+    django_on_heroku.settings(locals(), staticfiles=False)
 
 # if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
 #     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
