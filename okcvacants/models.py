@@ -43,6 +43,14 @@ class Neighborhood(models.Model):
     # MPHHE Security, Windsor Area
     neighborhoods_map_enabled = models.BooleanField(default=True)
 
+    @property
+    def property_count(self):
+        return self.properties.count()
+
+    @property
+    def property_density(self):
+        return self.properties.count() / (self.boundary_area / 640)
+
     def __str__(self):
         return self.name + " (" + str(self.id) + ")"
 

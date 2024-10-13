@@ -21,8 +21,15 @@ def map_view(request, neighborhood=None, properties=None):
         neighborhood = Neighborhood.objects.exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
-    properties_geojson = GeoJSONSerializer().serialize(properties, properties=['latlon'], geometry_field='latlon', use_natural_keys=True, with_modelname=False)
-    neighborhoods_geojson = GeoJSONSerializer().serialize(neighborhood, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
+    properties_geojson = GeoJSONSerializer().serialize(properties, properties=['latlon', 'pk','address'],
+                                                       geometry_field='latlon', use_natural_keys=True,
+                                                       with_modelname=False)
+    neighborhoods_geojson = GeoJSONSerializer().serialize(neighborhood,
+                                                          properties=['name', 'pk', 'type', 'boundary',
+                                                                      'boundary_area', 'property_count',
+                                                                      'property_density'],
+                                                          geometry_field='boundary', use_natural_keys=True,
+                                                          with_modelname=False)
 
     cities = City.objects.exclude(is_enabled=False)
     cities_geojson = GeoJSONSerializer().serialize(cities, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
@@ -55,9 +62,6 @@ def property_view(request, id=None):
     except Property.DoesNotExist:
         raise Http404("Could not find property")
     property_geojson = property.latlon
-    # property_geojson = serialize('geojson', [property],
-    #                              geometry_field='latlon',
-    #                              fields=('latlon', 'address', 'pk'))
     property_neighborhoods = []
     context = {'p': property,
                'property_geojson': property_geojson,
@@ -126,9 +130,9 @@ def neighborhood_view(request, id=None):
                                                        use_natural_keys=True,
                                                        with_modelname=False)
     print(properties_geojson)
-    # TODO: Need to add property_density, property_count. See neighborhood_geojson_serializer.py
     neighborhoods_geojson = GeoJSONSerializer().serialize([n],
-                                                          properties=['boundary', 'type', 'name', 'pk', 'boundary_area'],
+                                                          properties=['boundary', 'type', 'name', 'pk', 'boundary_area',
+                                                                      'property_count', 'property_density'],
                                                           geometry_field='boundary',
                                                           use_natural_keys=True,
                                                           with_modelname=False)
