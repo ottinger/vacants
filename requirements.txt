@@ -1,5 +1,6 @@
 django>=5.0.6
-django-geojson==4.1.0
+django-geojson==4.2.0
+geopandas>=1.0.1
 PyPDF2==1.26.0
 psycopg2-binary==2.9.3
 requests==2.21.0

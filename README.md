@@ -1,5 +1,17 @@
 # vacants
 
+**NOTE:** Update is in progress. To build in Docker:
+
+`docker build -t vacants .`
+
+To run:
+
+`docker run -it --rm -p 8000:8000 vacants`
+
+There may still be issues. Below content may be outdated.
+
+**END NOTE**
+
 This is a web app to track vacant properties. It imports data from the City of Oklahoma City's [abandoned buildings list](https://www.okc.gov/departments/development-services/code-enforcement/abandoned-buildings). Additionally, we use neighborhood boundaries from the City of OKC's [open data site](https://data.okc.gov/).
 
 The backend is built on Django, connected to a Postgres/PostGIS database. Since the buildings list is published as a PDF, PyPDF2 is used to parse it.
