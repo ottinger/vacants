@@ -8,6 +8,10 @@ To run:
 
 `docker run -it --rm -p 8000:8000 vacants`
 
+If you need to use the get_geocode management command:
+
+`docker run -it --rm -p 8000:8000 -e MAPBOX_KEY=(API KEY HERE) vacants`
+
 There may still be issues. Below content may be outdated.
 
 **END NOTE**
@@ -22,7 +26,6 @@ The frontend uses Bootstrap for responsive layout, Leaflet for map, and jQuery/j
 
 * Create your project/app on Heroku.
 * Set environment variables:
-    * IS_HEROKU=1
     * SECRET_KEY
         * Secret key that you will need to generate.
     * MAPBOX_KEY

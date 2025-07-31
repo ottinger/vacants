@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import django_on_heroku
 
 # Django doesn't serve static files on its own when DEBUG is set to False; that's what
@@ -29,6 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
+
 # Verbose logging - used to investigate 500 errors that creep up after we set DEBUG to False
 # Example: "Missing staticfiles manifest entry for '/css/style.css'"
 import logging
@@ -38,8 +41,7 @@ LOGGING = logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s',
 )
 
-ALLOWED_HOSTS = ['vacants.herokuapp.com',
-                 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*'] if IS_HEROKU_APP else ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -149,7 +151,7 @@ SERIALIZATION_MODULES = {
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 
-if (os.getenv('IS_HEROKU')):
+if IS_HEROKU_APP:
     # staticfiles is set to False: django_heroku sets the STATICFILES_STORAGE variable, which seems to be
     # causing problems (and we've got staticfiles configured already)
     django_on_heroku.settings(locals(), staticfiles=False)
