@@ -22,13 +22,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         gdf = get_and_transform_gdf()
 
-        # ds = DataSource(PROJECT_ROOT + "/misc_files/city_boundaries_shapefiles/city_boundaries.dbf")
-        #
-        # mapping = {'name': 'City_Name',
-        #            'boundary': 'POLYGON'}
-        #
-        # lm = LayerMapping(okcvacants.models.City, ds, mapping)
-        # lm.save(verbose=True)
         for i in range(0, len(gdf)):
             cur_row = gdf.loc[i]
             print(cur_row)
