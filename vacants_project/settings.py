@@ -109,7 +109,6 @@ if IS_HEROKU_APP:
     }
 else:
     DATABASES = {
-        # TODO: setup postgresql for heroku
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'sqlite_test_db.sqlite3',
