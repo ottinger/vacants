@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import django_on_heroku
+import dj_database_url
 
 # Django doesn't serve static files on its own when DEBUG is set to False; that's what
 # whitenoise does. (Otherwise we get 500 errors)
@@ -29,6 +31,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
+
 # Verbose logging - used to investigate 500 errors that creep up after we set DEBUG to False
 # Example: "Missing staticfiles manifest entry for '/css/style.css'"
 import logging
@@ -38,8 +42,7 @@ LOGGING = logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s',
 )
 
-ALLOWED_HOSTS = ['vacants.herokuapp.com',
-                 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*'] if IS_HEROKU_APP else ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'okcvacants.apps.OkcvacantsConfig',
+    'djgeojson'
 ]
 
 MIDDLEWARE = [
@@ -89,19 +93,27 @@ WSGI_APPLICATION = 'vacants_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vacants',
-        'USER': 'geodjango',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'TEST': {
-            'NAME': 'test_vacants'
+if IS_HEROKU_APP:
+    # In production on Heroku the database configuration is derived from the `DATABASE_URL`
+    # environment variable by the dj-database-url package. `DATABASE_URL` will be set
+    # automatically by Heroku when a database addon is attached to your Heroku app. See:
+    # https://devcenter.heroku.com/articles/provisioning-heroku-postgres#application-config-vars
+    # https://github.com/jazzband/dj-database-url
+    DATABASES = {
+        "default": dj_database_url.config(
+            env="DATABASE_URL",
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'sqlite_test_db.sqlite3',
         }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -148,19 +160,14 @@ STATICFILES_DIRS = (
 
 # serializers
 SERIALIZATION_MODULES = {
-    "geojson": "djgeojson.serializers",
-    # "neighborhood_geojson": "okcvacants.neighborhood_geojson_serializer"
+    "geojson": "django.contrib.gis.serializers.geojson"
 }
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 
-if (os.getenv('IS_HEROKU')):
+if IS_HEROKU_APP:
     # staticfiles is set to False: django_heroku sets the STATICFILES_STORAGE variable, which seems to be
     # causing problems (and we've got staticfiles configured already)
     django_on_heroku.settings(locals(), staticfiles=False)
 
-if DATABASES['default']['ENGINE'] in ('django.db.backends.postgresql', 'django.db.backends.postgresql_psycopg2'):
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-elif DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'

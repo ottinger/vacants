@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+from djgeojson.fields import PointField, GeometryField
 
 # Create your models here.
 class Property(models.Model):
@@ -13,7 +13,7 @@ class Property(models.Model):
     ward_number = models.IntegerField()
     parcel_number = models.IntegerField()  # This is OKC's parcel number, not to be confused with County Assessor's!
 
-    latlon = models.PointField(blank=True, null=True)
+    latlon = PointField(blank=True, null=True)
 
     # If the address is incorrectly formatted or the geocoder chokes on it, we'll manually set it here (while
     # keeping the original). For example, the geocoder thinks one of the addresses is near Kansas City.
@@ -25,7 +25,7 @@ class Property(models.Model):
 class Neighborhood(models.Model):
     name = models.CharField(max_length=150)
     type = models.CharField(max_length=150)
-    boundary = models.GeometryField()
+    boundary = GeometryField()
     boundary_area = models.FloatField(null=True)  # value is in acres
 
     # There can be multiple Neighborhoods for each Property, and (of course) multiple Properties
@@ -43,6 +43,14 @@ class Neighborhood(models.Model):
     # MPHHE Security, Windsor Area
     neighborhoods_map_enabled = models.BooleanField(default=True)
 
+    @property
+    def property_count(self):
+        return self.properties.count()
+
+    @property
+    def property_density(self):
+        return self.properties.count() / (self.boundary_area / 640)
+
     def __str__(self):
         return self.name + " (" + str(self.id) + ")"
 
@@ -50,7 +58,7 @@ class Neighborhood(models.Model):
 # City class for displaying municipal boundaries
 class City(models.Model):
     name = models.CharField(max_length=150)
-    boundary = models.GeometryField()
+    boundary = GeometryField()
     is_enabled = models.BooleanField(default=False)  # For now, we are only going to show Oklahoma City's boundaries
 
     def __str__(self):

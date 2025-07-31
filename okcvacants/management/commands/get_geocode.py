@@ -26,7 +26,16 @@ def get_geocode(address, api_key):
     print(address)
     r = requests.get(api_address)
     request_json = json.loads(r.text)
-    return request_json['features'][0]['center']
+    if not request_json['features']:
+        # string with issue is "112  LOCH LN   OKLAHOMA CITY, OK 73099".
+        # this fix seems to work for now.
+        if 'OKLAHOMA CITY' in address:
+            n_address = address.replace("OKLAHOMA CITY", "")
+            return get_geocode(n_address, api_key)
+        else:
+            return [0, 0]  # TODO: come up with a more proper fix
+    else:
+        return request_json['features'][0]['center']
 
 
 class Command(BaseCommand):
@@ -51,6 +60,10 @@ class Command(BaseCommand):
                     geocode = get_geocode(o.address, api_key)
                 o.lat = geocode[1]
                 o.lon = geocode[0]
-                o.latlon = Point(geocode[0], geocode[1])
+                # o.latlon = Point(geocode[0], geocode[1])
+                o.latlon = {
+                    'type': 'Point',
+                    'coordinates': [geocode[0], geocode[1]]
+                }
                 o.save()
                 print(geocode)

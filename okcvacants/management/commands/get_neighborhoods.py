@@ -1,15 +1,16 @@
-from django.contrib.gis.gdal import DataSource
-from django.contrib.gis.utils import LayerMapping
-
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
+import geopandas
 import django
 from django.core.management.base import BaseCommand
-
-django.setup()
+from shapely import Point
+from shapely.geometry import mapping, shape
 
 import okcvacants.models
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vacants_project.settings")
+
+django.setup()
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__name__))
 
@@ -20,22 +21,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         okcvacants.models.Neighborhood.objects.all().delete()  # clear the Neighborhood table
 
-        ds = DataSource(PROJECT_ROOT + "/misc_files/neighborhoods_shapefiles/okc_neighborhoods.dbf")
+        gdf = get_and_transform_gdf()
+        print(gdf)
 
-        mapping = {'name': 'Associatio',
-                   'type': 'Type',
-                   'boundary': 'POLYGON'}
+        for i in range(0, len(gdf)):
+            cur_row = gdf.loc[i]
+            print(cur_row['boundary'])
 
-        lm = LayerMapping(okcvacants.models.Neighborhood, ds, mapping)
-        lm.save(verbose=True)
+            boundary = mapping(cur_row['boundary'])
+            c_n = okcvacants.models.Neighborhood(name=cur_row['name'],
+                                                 type=cur_row['type'],
+                                                 # boundary=cur_row['boundary'])
+                                                 boundary=boundary,
+                                                 boundary_area=cur_row['gdf_area'])
+            c_n.save()
 
         for n in okcvacants.models.Neighborhood.objects.all():
-            # Calculate the area for each Neighborhood
-            # note that EPSG 32124 apparently ends in northern Norman. if we go further south, this may be an issue
-            n.boundary.transform(32124)
-            n.boundary_area = (n.boundary.area / 2589988.11) * 640  # Acres
-            n.save()
-
             # For Neighborhoods with very large area we'd like to hide in the map view, set
             # neighborhoods_map_enabled to False
             map_disabled_names = ["Downtown Oklahoma City Inc", "Friends of 10th Street", "MPHHE Security",
@@ -45,9 +46,34 @@ class Command(BaseCommand):
                 n.neighborhoods_map_enabled = False
 
             # Find Properties in each Neighborhood
-            n.boundary.transform(4326)
             for p in okcvacants.models.Property.objects.all():
-                if n.boundary.contains(p.latlon):
+                if p.latlon:
+                    p_point = Point(p.latlon['coordinates'])
+                else:
+                    continue
+
+                boundary_poly = shape(n.boundary)
+                if boundary_poly.contains(p_point):
                     n.properties.add(p)
                     n.save()
                     print("property added for " + str(n))
+
+
+def get_and_transform_gdf():
+    shp_path = PROJECT_ROOT + "/misc_files/neighborhoods_shapefiles/okc_neighborhoods.shp"
+    gdf = geopandas.read_file(shp_path)
+
+    # Calculate the area for each Neighborhood
+    # note that EPSG 32124 apparently ends in northern Norman. if we go further south, this may be an issue
+    gdf = gdf.to_crs(epsg=32124)
+    gdf['gdf_area'] = gdf.geometry.area
+    gdf['gdf_area'] = (gdf['gdf_area'] / 2589988.11) * 640  # Acres
+
+    gdf = gdf.to_crs(epsg=4326)
+
+    gdf = gdf.rename(columns={
+        'Associatio': 'name',
+        'Type': 'type',
+        'geometry': 'boundary'
+    })
+    return gdf

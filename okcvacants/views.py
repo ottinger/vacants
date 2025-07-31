@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404
 from django.template import loader
 from django.core.paginator import Paginator
 
-from django.core.serializers import serialize
+from djgeojson.serializers import Serializer as GeoJSONSerializer
 
 import csv
 
@@ -20,17 +20,18 @@ def map_view(request, neighborhood=None, properties=None):
         neighborhood = Neighborhood.objects.exclude(properties__isnull=True).exclude(neighborhoods_map_enabled=False)
         properties = Property.objects.all()
 
-    properties_geojson = serialize('geojson', properties,
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address', 'pk'))
-    neighborhoods_geojson = serialize('neighborhood_geojson', neighborhood,
-                                      geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type', 'pk'))
+    properties_geojson = GeoJSONSerializer().serialize(properties, properties=['latlon', 'pk','address'],
+                                                       geometry_field='latlon', use_natural_keys=True,
+                                                       with_modelname=False)
+    neighborhoods_geojson = GeoJSONSerializer().serialize(neighborhood,
+                                                          properties=['name', 'pk', 'type', 'boundary',
+                                                                      'boundary_area', 'property_count',
+                                                                      'property_density'],
+                                                          geometry_field='boundary', use_natural_keys=True,
+                                                          with_modelname=False)
 
     cities = City.objects.exclude(is_enabled=False)
-    cities_geojson = serialize('geojson', cities,
-                               geometry_field='boundary',
-                               fields=('boundary', 'name'))
+    cities_geojson = GeoJSONSerializer().serialize(cities, geometry_field='boundary', use_natural_keys=True, with_modelname=False)
 
     context = {'properties_geojson': properties_geojson,
                'neighborhoods_geojson': neighborhoods_geojson,
@@ -59,10 +60,8 @@ def property_view(request, id=None):
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
         raise Http404("Could not find property")
-    property_geojson = serialize('geojson', [property],
-                                 geometry_field='latlon',
-                                 fields=('latlon', 'address', 'pk'))
-    property_neighborhoods = Neighborhood.objects.filter(properties__id=id)
+    property_geojson = property.latlon
+    property_neighborhoods = []
     context = {'p': property,
                'property_geojson': property_geojson,
                'property_neighborhoods': property_neighborhoods}
@@ -123,13 +122,19 @@ def neighborhood_view(request, id=None):
     except Neighborhood.DoesNotExist:
         raise Http404("Could not find neighborhood")
 
-    properties_geojson = serialize('geojson', [x for x in Property.objects.all() if n.boundary.contains(x.latlon)],
-                                   geometry_field='latlon',
-                                   fields=('latlon', 'address', 'pk'))
+    props = [x for x in n.properties.all()]
+    properties_geojson = GeoJSONSerializer().serialize(props,
+                                                       properties=['latlon', 'address', 'pk'],
+                                                       geometry_field='latlon',
+                                                       use_natural_keys=True,
+                                                       with_modelname=False)
     print(properties_geojson)
-    neighborhoods_geojson = serialize('neighborhood_geojson', [n],
-                                      geometry_field='boundary',
-                                      fields=('boundary', 'name', 'type', 'pk'))
+    neighborhoods_geojson = GeoJSONSerializer().serialize([n],
+                                                          properties=['boundary', 'type', 'name', 'pk', 'boundary_area',
+                                                                      'property_count', 'property_density'],
+                                                          geometry_field='boundary',
+                                                          use_natural_keys=True,
+                                                          with_modelname=False)
     print(neighborhoods_geojson)
     context = {'n': n,
                'neighborhoods_geojson': neighborhoods_geojson,

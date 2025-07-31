@@ -32,7 +32,7 @@ class Command(BaseCommand):
         elif options['url']:
             url = options['url']
         else:
-            url = "https://www.okc.gov/home/showpublisheddocument/22796/637807047196200000"
+            url = "https://www.okc.gov/files/assets/city/v/1/development-services/documents/abandon.pdf"
 
         if options['filename']:
             self.parse_pdf(f)
