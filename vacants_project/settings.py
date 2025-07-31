@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY', 'h2&$a6itbdb1ik)53jag8x238x+c29jz9%2sq)1%s$og4zlo(b')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
